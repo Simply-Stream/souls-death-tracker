@@ -23,3 +23,9 @@ services:
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
+
+    knpu.oauth2.client.twitch:
+        class: KnpU\OAuth2ClientBundle\Client\Provider\TwitchClient
+        public: true
+        arguments:
+            $provider: '@SimplyStream\TwitchApiBundle\Helix\Authentication\Provider\TwitchProvider'
