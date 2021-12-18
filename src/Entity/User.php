@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -40,8 +42,14 @@ class User implements UserInterface
      */
     private $email;
 
+    /**
+     * @ORM\OneToMany(targetEntity=Tracker::class, mappedBy="owner", orphanRemoval=true)
+     */
+    private $trackers;
+
     public function __construct()
     {
+        $this->trackers = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -142,6 +150,36 @@ class User implements UserInterface
     public function setEmail(string $email): self
     {
         $this->email = $email;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Tracker[]
+     */
+    public function getTrackers(): Collection
+    {
+        return $this->trackers;
+    }
+
+    public function addTracker(Tracker $tracker): self
+    {
+        if (!$this->trackers->contains($tracker)) {
+            $this->trackers[] = $tracker;
+            $tracker->setOwner($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTracker(Tracker $tracker): self
+    {
+        if ($this->trackers->removeElement($tracker)) {
+            // set the owning side to null (unless already changed)
+            if ($tracker->getOwner() === $this) {
+                $tracker->setOwner(null);
+            }
+        }
 
         return $this;
     }
