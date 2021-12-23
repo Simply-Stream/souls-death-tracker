@@ -2,40 +2,27 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\CounterRepository;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity(repositoryClass=CounterRepository::class)
- */
+#[ApiResource, ORM\Entity(repositoryClass: CounterRepository::class)]
 class Counter
 {
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
-     */
-    private $id;
+    #[ORM\Id, ORM\GeneratedValue, ORM\Column(type: "integer")]
+    protected $id;
 
-    /**
-     * @ORM\Column(type="integer")
-     */
-    private $deaths;
+    #[ORM\Column]
+    protected int $deaths = 0;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
-    private $cause;
+    #[ORM\Column(length: 255)]
+    protected ?string $cause;
 
-    /**
-     * @ORM\ManyToOne(targetEntity=Section::class, inversedBy="deaths")
-     */
-    private $section;
+    #[ORM\ManyToOne(inversedBy: "deaths")]
+    protected ?Section $section;
 
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
-    private $alias;
+    #[ORM\Column(length: 255, nullable: true)]
+    protected ?string $alias;
 
     public function getId(): ?int
     {

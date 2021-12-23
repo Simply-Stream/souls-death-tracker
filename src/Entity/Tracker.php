@@ -2,43 +2,39 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\TrackerRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity(repositoryClass=TrackerRepository::class)
- */
+#[
+    ApiResource(
+        collectionOperations: ['get', 'post'],
+        itemOperations: [
+            'get',
+            'delete' => ['security' => 'object.getOwner() == user'],
+            'put' // => ['security' => 'object.getOwner() == user'],
+        ]
+    ),
+    ORM\Entity(repositoryClass: TrackerRepository::class)
+]
 class Tracker
 {
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
-     */
-    protected $id;
+    #[ORM\Id, ORM\GeneratedValue, ORM\Column]
+    protected ?int $id;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
-    protected $name;
+    #[ORM\Column(length: 255)]
+    protected ?string $name;
 
-    /**
-     * @ORM\ManyToOne(targetEntity=Game::class)
-     */
-    protected $game;
+    #[ORM\ManyToOne]
+    protected ?Game $game;
 
-    /**
-     * @ORM\ManyToOne(targetEntity=User::class, inversedBy="trackers")
-     * @ORM\JoinColumn(nullable=false)
-     */
-    private $owner;
+    #[ORM\ManyToOne(inversedBy: "trackers"), ORM\JoinColumn(nullable: false)]
+    protected ?User $owner;
 
-    /**
-     * @ORM\OneToMany(targetEntity=Section::class, mappedBy="tracker", orphanRemoval=true)
-     */
-    private $sections;
+    #[ORM\OneToMany(mappedBy: "tracker", targetEntity: Section::class, orphanRemoval: true)]
+    protected ArrayCollection $sections;
 
     public function __construct()
     {
@@ -96,7 +92,7 @@ class Tracker
 
     public function addSection(Section $section): self
     {
-        if (!$this->sections->contains($section)) {
+        if (! $this->sections->contains($section)) {
             $this->sections[] = $section;
             $section->setTracker($this);
         }
@@ -106,11 +102,9 @@ class Tracker
 
     public function removeSection(Section $section): self
     {
-        if ($this->sections->removeElement($section)) {
-            // set the owning side to null (unless already changed)
-            if ($section->getTracker() === $this) {
-                $section->setTracker(null);
-            }
+        // set the owning side to null (unless already changed)
+        if ($this->sections->removeElement($section) && $section->getTracker() === $this) {
+            $section->setTracker(null);
         }
 
         return $this;

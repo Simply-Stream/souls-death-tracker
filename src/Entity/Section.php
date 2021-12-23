@@ -2,38 +2,26 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\SectionRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity(repositoryClass=SectionRepository::class)
- */
+#[ApiResource, ORM\Entity(repositoryClass: SectionRepository::class)]
 class Section
 {
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
-     */
-    private $id;
+    #[ORM\Id, ORM\GeneratedValue, ORM\Column]
+    protected ?int $id;
 
-    /**
-     * @ORM\OneToMany(targetEntity=Counter::class, mappedBy="section")
-     */
-    private $deaths;
+    #[ORM\OneToMany(mappedBy: "section", targetEntity: Counter::class)]
+    protected ArrayCollection $deaths;
 
-    /**
-     * @ORM\ManyToOne(targetEntity=Tracker::class, inversedBy="sections")
-     * @ORM\JoinColumn(nullable=false)
-     */
-    private $tracker;
+    #[ORM\ManyToOne(inversedBy: "sections"), ORM\JoinColumn(nullable: false)]
+    protected ?Tracker $tracker;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
-    private $name;
+    #[ORM\Column(length: 255)]
+    protected ?string $title;
 
     public function __construct()
     {
@@ -46,7 +34,7 @@ class Section
     }
 
     /**
-     * @return Collection|Counter[]
+     * @return Collection
      */
     public function getDeaths(): Collection
     {
@@ -55,7 +43,7 @@ class Section
 
     public function addDeath(Counter $death): self
     {
-        if (!$this->deaths->contains($death)) {
+        if (! $this->deaths->contains($death)) {
             $this->deaths[] = $death;
             $death->setSection($this);
         }
@@ -87,14 +75,14 @@ class Section
         return $this;
     }
 
-    public function getName(): ?string
+    public function getTitle(): ?string
     {
-        return $this->name;
+        return $this->title;
     }
 
-    public function setName(string $name): self
+    public function setTitle(string $title): self
     {
-        $this->name = $name;
+        $this->title = $title;
 
         return $this;
     }

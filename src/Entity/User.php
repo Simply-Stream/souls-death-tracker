@@ -9,43 +9,26 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
-/**
- * @ORM\Entity(repositoryClass=UserRepository::class)
- * @ORM\Table(name="`user`")
- */
+#[ORM\Entity(repositoryClass: UserRepository::class), ORM\Table(name: "users")]
 class User implements UserInterface
 {
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
-     */
-    private $id;
+    #[ORM\Id, ORM\GeneratedValue, ORM\Column]
+    private ?int $id;
 
-    /**
-     * @ORM\Column(type="string", length=180, unique=true)
-     */
-    private $username;
+    #[ORM\Column(length: 180, unique: true)]
+    private string $username;
 
-    /**
-     * @ORM\Column(type="json")
-     */
-    private $roles = [];
+    #[ORM\Column(type: "json")]
+    private array $roles = [];
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
-    private $twitchId;
+    #[ORM\Column(length: 255)]
+    private ?string $twitchId;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
-    private $email;
+    #[ORM\Column(length: 255)]
+    private ?string $email;
 
-    /**
-     * @ORM\OneToMany(targetEntity=Tracker::class, mappedBy="owner", orphanRemoval=true)
-     */
-    private $trackers;
+    #[ORM\OneToMany(mappedBy: "owner", targetEntity: Tracker::class, orphanRemoval: true)]
+    private ArrayCollection $trackers;
 
     public function __construct()
     {
@@ -164,7 +147,7 @@ class User implements UserInterface
 
     public function addTracker(Tracker $tracker): self
     {
-        if (!$this->trackers->contains($tracker)) {
+        if (! $this->trackers->contains($tracker)) {
             $this->trackers[] = $tracker;
             $tracker->setOwner($this);
         }
@@ -174,11 +157,9 @@ class User implements UserInterface
 
     public function removeTracker(Tracker $tracker): self
     {
-        if ($this->trackers->removeElement($tracker)) {
-            // set the owning side to null (unless already changed)
-            if ($tracker->getOwner() === $this) {
-                $tracker->setOwner(null);
-            }
+        // set the owning side to null (unless already changed)
+        if ($this->trackers->removeElement($tracker) && $tracker->getOwner() === $this) {
+            $tracker->setOwner(null);
         }
 
         return $this;
