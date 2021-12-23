@@ -10,7 +10,13 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
-#[ApiResource, ORM\Entity(repositoryClass: UserRepository::class), ORM\Table(name: "users")]
+#[
+    ApiResource(
+        collectionOperations: [],
+        itemOperations: ['GET']
+    ),
+    ORM\Entity(repositoryClass: UserRepository::class), ORM\Table(name: "users")
+]
 class User implements UserInterface
 {
     #[ORM\Id, ORM\GeneratedValue, ORM\Column]

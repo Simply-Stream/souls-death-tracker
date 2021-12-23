@@ -1,1 +1,7 @@
 @import "~bootstrap";
+@import "~@fortawesome/fontawesome-free/css/all.min.css";
+
+.btn.btn-twitch-primary {
+    background-color: #6441a5;
+    color: white;
+}

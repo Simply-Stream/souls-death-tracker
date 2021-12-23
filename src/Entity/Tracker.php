@@ -7,6 +7,7 @@ use App\Repository\TrackerRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[
     ApiResource(
@@ -24,7 +25,7 @@ class Tracker
     #[ORM\Id, ORM\GeneratedValue, ORM\Column]
     protected ?int $id;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255), Groups('tracker:read')]
     protected ?string $name;
 
     #[ORM\ManyToOne]
@@ -33,7 +34,7 @@ class Tracker
     #[ORM\ManyToOne(inversedBy: "trackers"), ORM\JoinColumn(nullable: false)]
     protected ?User $owner;
 
-    #[ORM\OneToMany(mappedBy: "tracker", targetEntity: Section::class, orphanRemoval: true)]
+    #[ORM\OneToMany(mappedBy: "tracker", targetEntity: Section::class, orphanRemoval: true), Groups('tracker:read')]
     protected Collection $sections;
 
     public function __construct()

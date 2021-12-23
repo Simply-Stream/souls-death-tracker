@@ -7,6 +7,7 @@ use App\Repository\SectionRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ApiResource, ORM\Entity(repositoryClass: SectionRepository::class)]
 class Section
@@ -20,7 +21,7 @@ class Section
     #[ORM\ManyToOne(inversedBy: "sections"), ORM\JoinColumn(nullable: false)]
     protected ?Tracker $tracker;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255), Groups(['tracker:read', 'section:read'])]
     protected ?string $title;
 
     public function __construct()
