@@ -15,7 +15,7 @@ class Section
     protected ?int $id;
 
     #[ORM\OneToMany(mappedBy: "section", targetEntity: Counter::class)]
-    protected ArrayCollection $deaths;
+    protected Collection $deaths;
 
     #[ORM\ManyToOne(inversedBy: "sections"), ORM\JoinColumn(nullable: false)]
     protected ?Tracker $tracker;

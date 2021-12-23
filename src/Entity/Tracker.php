@@ -34,7 +34,7 @@ class Tracker
     protected ?User $owner;
 
     #[ORM\OneToMany(mappedBy: "tracker", targetEntity: Section::class, orphanRemoval: true)]
-    protected ArrayCollection $sections;
+    protected Collection $sections;
 
     public function __construct()
     {

@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -9,7 +10,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
-#[ORM\Entity(repositoryClass: UserRepository::class), ORM\Table(name: "users")]
+#[ApiResource, ORM\Entity(repositoryClass: UserRepository::class), ORM\Table(name: "users")]
 class User implements UserInterface
 {
     #[ORM\Id, ORM\GeneratedValue, ORM\Column]
@@ -28,7 +29,7 @@ class User implements UserInterface
     private ?string $email;
 
     #[ORM\OneToMany(mappedBy: "owner", targetEntity: Tracker::class, orphanRemoval: true)]
-    private ArrayCollection $trackers;
+    private Collection $trackers;
 
     public function __construct()
     {
