@@ -1,0 +1,44 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello TrackerController!{% endblock %}
+
+{% block body %}
+    <h2>Trackers</h2>
+
+    <div class="create-tracker-wrapper" data-controller="tracker-create">
+        <h3>Create new tracker</h3>
+
+        <form data-action="tracker-create#create">
+            <div class="mb-3">
+                <label for="trackerNameInput" class="form-label">Tracker name</label>
+                <input type="text" class="form-control" id="trackerNameInput" placeholder="Dank Souls III">
+            </div>
+
+            <div class="mb-3">
+                Maingame:
+
+                <div class="mb-3">
+                    <label for="trackerCounterCauseInput-0">Cause</label>
+                    <input name="counterCause[]" type="text"
+                           class="form-control" id="trackerCounterCauseInput-0"
+                           placeholder="mobs">
+                </div>
+
+                <div data-tracker-create-target="counter"></div>
+            </div>
+
+            <button class="btn btn-secondary" data-action="tracker-create#add">Add cause</button>
+            <button class="btn btn-primary" type="submit">Submit</button>
+        </form>
+    </div>
+
+    {% for tracker in trackers %}
+        <div class="card" style="width: 18rem;">
+            <div class="card-body">
+                <h5 class="card-title">{{ tracker.name }}</h5>
+
+                <a href="{{ path('get_tracker', {id: tracker.id}) }}" class="card-link">Show</a>
+            </div>
+        </div>
+    {% endfor %}
+{% endblock %}

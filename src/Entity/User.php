@@ -2,46 +2,47 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\UserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
-/**
- * @ORM\Entity(repositoryClass=UserRepository::class)
- * @ORM\Table(name="`user`")
- */
+#[
+    ApiResource(
+        collectionOperations: [],
+        itemOperations: ['GET']
+    ),
+    ORM\Entity(repositoryClass: UserRepository::class), ORM\Table(name: "users")
+]
 class User implements UserInterface
 {
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
-     */
-    private $id;
+    #[ORM\Id, ORM\GeneratedValue, ORM\Column]
+    private ?int $id;
 
-    /**
-     * @ORM\Column(type="string", length=180, unique=true)
-     */
-    private $username;
+    #[ORM\Column(length: 180, unique: true)]
+    private string $username;
 
-    /**
-     * @ORM\Column(type="json")
-     */
-    private $roles = [];
+    #[ORM\Column(length: 180, unique: true, nullable: true)]
+    private string $displayName;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
-    private $twitchId;
+    #[ORM\Column(type: "json")]
+    private array $roles = [];
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
-    private $email;
+    #[ORM\Column(length: 255)]
+    private ?string $twitchId;
+
+    #[ORM\Column(length: 255)]
+    private ?string $email;
+
+    #[ORM\OneToMany(mappedBy: "owner", targetEntity: Tracker::class, orphanRemoval: true)]
+    private Collection $trackers;
 
     public function __construct()
     {
+        $this->trackers = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -60,6 +61,18 @@ class User implements UserInterface
     public function setUsername(string $username): self
     {
         $this->username = $username;
+
+        return $this;
+    }
+
+    public function getDisplayName(): string
+    {
+        return $this->displayName;
+    }
+
+    public function setDisplayName(string $displayName): User
+    {
+        $this->displayName = $displayName;
 
         return $this;
     }
@@ -142,6 +155,34 @@ class User implements UserInterface
     public function setEmail(string $email): self
     {
         $this->email = $email;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Tracker[]
+     */
+    public function getTrackers(): Collection
+    {
+        return $this->trackers;
+    }
+
+    public function addTracker(Tracker $tracker): self
+    {
+        if (! $this->trackers->contains($tracker)) {
+            $this->trackers[] = $tracker;
+            $tracker->setOwner($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTracker(Tracker $tracker): self
+    {
+        // set the owning side to null (unless already changed)
+        if ($this->trackers->removeElement($tracker) && $tracker->getOwner() === $this) {
+            $tracker->setOwner(null);
+        }
 
         return $this;
     }

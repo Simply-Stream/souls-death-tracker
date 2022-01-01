@@ -1,0 +1,36 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello TrackerController!{% endblock %}
+
+{% block body %}
+    {% for section in tracker.sections %}
+        <div>
+            <h5>{{ section.title }}</h5>
+
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>Cause</th>
+                    <th>Deaths</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for death in section.deaths %}
+                    <tr {{ death.successful ? 'class="table-success"': '' }}>
+                        <td data-bs-toggle="tooltip" data-bs-placement="top"
+                            title="{{ death.alias }}">{{ death.cause }}</td>
+                        <td>{{ death.deaths }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+
+                <tfoot>
+                <tr>
+                    <th>Total</th>
+                    <th>{{ section.totalDeaths() }}</th>
+                </tr>
+                </tfoot>
+            </table>
+        </div>
+    {% endfor %}
+{% endblock %}
