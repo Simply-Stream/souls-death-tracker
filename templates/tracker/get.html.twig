@@ -12,18 +12,24 @@
                 <tr>
                     <th>Cause</th>
                     <th>Deaths</th>
-{#                    <th>Lost souls</th>#}
                 </tr>
                 </thead>
                 <tbody>
                 {% for death in section.deaths %}
-                    <tr>
-                        <td>{{ death.cause }}</td>
+                    <tr {{ death.successful ? 'class="table-success"': '' }}>
+                        <td data-bs-toggle="tooltip" data-bs-placement="top"
+                            title="{{ death.alias }}">{{ death.cause }}</td>
                         <td>{{ death.deaths }}</td>
-{#                        <td>{{ death.souls }}</td>#}
                     </tr>
                 {% endfor %}
                 </tbody>
+
+                <tfoot>
+                <tr>
+                    <th>Total</th>
+                    <th>{{ section.totalDeaths() }}</th>
+                </tr>
+                </tfoot>
             </table>
         </div>
     {% endfor %}

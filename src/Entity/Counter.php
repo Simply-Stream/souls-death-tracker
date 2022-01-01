@@ -24,6 +24,9 @@ class Counter
     #[ORM\Column(length: 255, nullable: true)]
     protected ?string $alias;
 
+    #[ORM\Column(options: ["default" => false])]
+    protected bool $successful = false;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -73,6 +76,18 @@ class Counter
     public function setAlias(?string $alias): self
     {
         $this->alias = $alias;
+
+        return $this;
+    }
+
+    public function isSuccessful(): bool
+    {
+        return $this->successful;
+    }
+
+    public function setSuccessful(bool $successful): self
+    {
+        $this->successful = $successful;
 
         return $this;
     }

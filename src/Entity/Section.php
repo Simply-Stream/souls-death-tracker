@@ -7,6 +7,7 @@ use App\Repository\SectionRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use JetBrains\PhpStorm\Pure;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ApiResource, ORM\Entity(repositoryClass: SectionRepository::class)]
@@ -15,7 +16,7 @@ class Section
     #[ORM\Id, ORM\GeneratedValue, ORM\Column]
     protected ?int $id;
 
-    #[ORM\OneToMany(mappedBy: "section", targetEntity: Counter::class)]
+    #[ORM\OneToMany(mappedBy: "section", targetEntity: Counter::class), ORM\OrderBy(['id' => 'ASC'])]
     protected Collection $deaths;
 
     #[ORM\ManyToOne(inversedBy: "sections"), ORM\JoinColumn(nullable: false)]
@@ -35,7 +36,7 @@ class Section
     }
 
     /**
-     * @return Collection
+     * @return Collection|Counter[]
      */
     public function getDeaths(): Collection
     {
@@ -86,5 +87,16 @@ class Section
         $this->title = $title;
 
         return $this;
+    }
+
+    #[Pure] public function getTotalDeaths(): int
+    {
+        $total = 0;
+
+        foreach ($this->getDeaths() as $death) {
+            $total += $death->getDeaths();
+        }
+
+        return $total;
     }
 }

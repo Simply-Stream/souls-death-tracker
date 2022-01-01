@@ -108,7 +108,7 @@ class TwitchAuthenticator extends OAuth2Authenticator
                     $user = new User();
                     $user
                         ->setEmail($email)
-                        ->setUsername($twitchUser['preferred_username']);
+                        ->setDisplayName($twitchUser['preferred_username']);
 
                     $newUser = true;
                 }

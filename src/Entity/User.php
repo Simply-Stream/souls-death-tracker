@@ -25,6 +25,9 @@ class User implements UserInterface
     #[ORM\Column(length: 180, unique: true)]
     private string $username;
 
+    #[ORM\Column(length: 180, unique: true, nullable: true)]
+    private string $displayName;
+
     #[ORM\Column(type: "json")]
     private array $roles = [];
 
@@ -58,6 +61,18 @@ class User implements UserInterface
     public function setUsername(string $username): self
     {
         $this->username = $username;
+
+        return $this;
+    }
+
+    public function getDisplayName(): string
+    {
+        return $this->displayName;
+    }
+
+    public function setDisplayName(string $displayName): User
+    {
+        $this->displayName = $displayName;
 
         return $this;
     }

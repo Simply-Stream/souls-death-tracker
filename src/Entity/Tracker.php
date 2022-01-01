@@ -34,7 +34,11 @@ class Tracker
     #[ORM\ManyToOne(inversedBy: "trackers"), ORM\JoinColumn(nullable: false)]
     protected ?User $owner;
 
-    #[ORM\OneToMany(mappedBy: "tracker", targetEntity: Section::class, orphanRemoval: true), Groups('tracker:read')]
+    #[
+        ORM\OneToMany(mappedBy: "tracker", targetEntity: Section::class, orphanRemoval: true),
+        ORM\OrderBy(['id' => 'ASC']),
+        Groups('tracker:read')
+    ]
     protected Collection $sections;
 
     public function __construct()

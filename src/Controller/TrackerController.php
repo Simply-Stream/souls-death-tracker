@@ -20,8 +20,18 @@ class TrackerController extends AbstractController
     #[Route('/tracker/{id}', name: 'get_tracker')]
     public function getTracker(string $id, TrackerRepository $trackerRepository): Response
     {
+        $tracker = $trackerRepository->find($id);
+        $total = 0;
+
+        if ($tracker) {
+            foreach ($tracker->getSections() as $section) {
+                $total += $section->getTotalDeaths();
+            }
+        }
+
         return $this->render('tracker/get.html.twig', [
-            'tracker' => $trackerRepository->find($id),
+            'tracker' => $tracker,
+            'total' => $total,
         ]);
     }
 }
