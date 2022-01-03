@@ -29,3 +29,7 @@ services:
         public: true
         arguments:
             $provider: '@SimplyStream\TwitchApiBundle\Helix\Authentication\Provider\TwitchProvider'
+
+    App\EventSubscriber\TwitchChatcommandSubscriber:
+        arguments:
+            $producer: '@old_sound_rabbit_mq.send_chat_message_producer'
