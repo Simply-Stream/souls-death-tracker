@@ -59,7 +59,7 @@ class TwitchChatcommandSubscriber implements EventSubscriberInterface
                 foreach ($section->getDeaths() as $death) {
                     if ($death->getAlias() === $command[2]) {
                         if (isset($command[3])) {
-                            $death->setDeaths($command[3]);
+                            $death->setDeat((int)$command[3]);
                         } else {
                             $death->setDeaths($death->getDeaths() + 1);
                         }
