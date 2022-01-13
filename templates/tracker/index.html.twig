@@ -5,31 +5,10 @@
 {% block body %}
     <h2>Trackers</h2>
 
-    <div class="create-tracker-wrapper" data-controller="tracker-create">
+    <div class="create-tracker-wrapper">
         <h3>Create new tracker</h3>
 
-        <form data-action="tracker-create#create">
-            <div class="mb-3">
-                <label for="trackerNameInput" class="form-label">Tracker name</label>
-                <input type="text" class="form-control" id="trackerNameInput" placeholder="Dank Souls III">
-            </div>
-
-            <div class="mb-3">
-                Maingame:
-
-                <div class="mb-3">
-                    <label for="trackerCounterCauseInput-0">Cause</label>
-                    <input name="counterCause[]" type="text"
-                           class="form-control" id="trackerCounterCauseInput-0"
-                           placeholder="mobs">
-                </div>
-
-                <div data-tracker-create-target="counter"></div>
-            </div>
-
-            <button class="btn btn-secondary" data-action="tracker-create#add">Add cause</button>
-            <button class="btn btn-primary" type="submit">Submit</button>
-        </form>
+        {% include 'tracker/_tracker-form.html.twig' with {form} only %}
     </div>
 
     {% for tracker in trackers %}
