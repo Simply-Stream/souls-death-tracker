@@ -52,9 +52,10 @@ class TwitchChatcommandSubscriber implements EventSubscriberInterface
             return;
         }
 
-        if ($tracker->getOwner()->getUserIdentifier() === $channel ||
-            $content['userState']['mod'] ||
-            in_array('vip/1', $content['userState']['badges'], true)) {
+        if ($tracker->getOwner()->getUserIdentifier() === $channel && (
+                $content['userState']['mod'] ||
+                in_array('vip/1', $content['userState']['badges'], true))
+        ) {
             foreach ($tracker->getSections() as $section) {
                 foreach ($section->getDeaths() as $death) {
                     if ($death->getAlias() === $command[2]) {
@@ -66,7 +67,7 @@ class TwitchChatcommandSubscriber implements EventSubscriberInterface
 
                         $this->producer->publish(\json_encode([
                             'channel' => $user->getUserIdentifier(),
-                            'answer' => "{$user->getDisplayName()} has died on '{$death->getCause()}' {$death->getDeaths()}x",
+                            'answer' => "@{$user->getDisplayName()} has died on '{$death->getCause()}' {$death->getDeaths()}x",
                         ], JSON_THROW_ON_ERROR));
                     }
                 }
@@ -96,21 +97,27 @@ class TwitchChatcommandSubscriber implements EventSubscriberInterface
             return;
         }
 
-        foreach ($tracker->getSections() as $section) {
-            foreach ($section->getDeaths() as $death) {
-                if ($death->getAlias() === $command[2]) {
-                    $death->setSuccessful(true);
+        if ($tracker->getOwner()->getUserIdentifier() === $channel && (
+                $content['userState']['mod'] ||
+                in_array('vip/1', $content['userState']['badges'], true))
+        ) {
 
-                    $this->producer->publish(\json_encode([
-                        'channel' => $user->getUserIdentifier(),
-                        'answer' => "{$user->getDisplayName()} has killed '{$death->getCause()}' and died {$death->getDeaths()}x",
-                    ], JSON_THROW_ON_ERROR));
+            foreach ($tracker->getSections() as $section) {
+                foreach ($section->getDeaths() as $death) {
+                    if ($death->getAlias() === $command[2]) {
+                        $death->setSuccessful(true);
+
+                        $this->producer->publish(\json_encode([
+                            'channel' => $user->getUserIdentifier(),
+                            'answer' => "{$user->getDisplayName()} has killed '{$death->getCause()}' and died {$death->getDeaths()}x",
+                        ], JSON_THROW_ON_ERROR));
+                    }
                 }
             }
-        }
 
-        $this->entityManager->persist($tracker);
-        $this->entityManager->flush();
+            $this->entityManager->persist($tracker);
+            $this->entityManager->flush();
+        }
     }
 
     public static function getSubscribedEvents()
