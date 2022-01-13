@@ -1,0 +1,70 @@
+{% form_theme form 'bootstrap_5_layout.html.twig' %}
+
+{% macro section_item(form) %}
+    {% import _self as formMacros %}
+
+    <div {{ stimulus_target('tracker-create', 'section') }} class="d-flex flex-column">
+        <div class="d-flex flex-row">
+            <div class="flex-grow-1">
+                {{ form_label(form.title) }}
+                {{ form_widget(form.title) }}
+            </div>
+
+            <button type="button" class="align-self-center btn-close" aria-label="Close"
+                    data-action="tracker-create#removeSection"></button>
+        </div>
+
+        <div {{ stimulus_controller('section-create', {
+            causesPrototype: formMacros.cause_item(form.causes.vars.prototype)
+        }) }}>
+            <div {{ stimulus_target('section-create', 'causes') }}>
+                <b>{{ form_label(form.causes) }}
+                    <button type="button" class="btn fas fa-plus" data-action="section-create#addCause"></button>
+
+                    {% for cause in form.causes %}
+                        {{ formMacros.cause_item(cause) }}
+                    {% endfor %}
+                </b>
+            </div>
+        </div>
+
+    </div>
+{% endmacro %}
+
+{% macro cause_item(form) %}
+    <div {{ stimulus_target('section-create', 'cause') }}>
+        <div class="input-group">
+            <span class="input-group-text">Cause and alias</span>
+            {{ form_widget(form.cause, {'attr': {'class': 'form-control'}}) }}
+            {{ form_widget(form.alias, {'attr': {'class': 'form-control'}}) }}
+            <span class="input-group-text">Deaths</span>
+            {{ form_widget(form.deaths, {'attr': {'class': 'form-control'}, 'value': 0}) }}
+        </div>
+    </div>
+{% endmacro %}
+
+{% import _self as formMacros %}
+
+<div {{ stimulus_controller('tracker-create', {
+    sectionsPrototype: formMacros.section_item(form.sections.vars.prototype)
+}) }}>
+    {{ form_start(form) }}
+
+    {{ form_label(form.name, 'Tracker Name') }}
+    {{ form_widget(form.name) }}
+
+    <div class="mb-3">
+        <div {{ stimulus_target('tracker-create', 'sections') }}>
+            <h3>Sections
+                <button type="button" class="btn fas fa-plus" data-action="tracker-create#addSection"></button>
+            </h3>
+
+            {% for section in form.sections %}
+                {{ formMacros.section_item(section) }}
+            {% endfor %}
+        </div>
+    </div>
+
+    <button class="btn btn-primary" type="submit">Submit</button>
+    {{ form_end(form, {render_rest: false}) }}
+</div>

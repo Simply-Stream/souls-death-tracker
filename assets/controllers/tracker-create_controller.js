@@ -2,34 +2,36 @@ import { Controller } from '@hotwired/stimulus';
 
 export default class extends Controller {
     static targets = [
-        'counter'
+        'sections', 'section',
     ];
 
-    form = {
-        'sections': [
-            {
-                'name': 'Maingame',
-                'counters': []
-            }
-        ]
+    static values = {
+        sectionsPrototype: String,
     };
 
-    add(event) {
-        event.preventDefault();
-
-        this.counterTarget.innerHTML += `
-            <div class="mb-3">
-                <label for="trackerCounterCauseInput">Cause</label>
-                <input name="counterCause[]" type="text" class="form-control" id="trackerCounterCauseInput" placeholder="mobs">
-            </div>
-        `;
+    connect() {
+        this.sectionsIndex = this.sectionsCountValue = this.sectionTargets.length;
     }
 
-    create(event) {
+    addSection(event) {
         event.preventDefault();
-        // event.target.elements['counterCause[]'].each(el => {
-        //     console.log(el);
-        // });
-        console.log(event.target.elements);
+
+        let prototype = JSON.parse(this.sectionsPrototypeValue);
+        const newField = prototype.replace(/__name__/g, this.sectionsIndex);
+        this.sectionsIndex++;
+        this.sectionsCountValue++;
+
+        this.sectionsTarget.insertAdjacentHTML('beforeend', newField);
+    }
+
+    removeSection(event) {
+        event.preventDefault();
+
+        this.sectionTargets.forEach(element => {
+            if (element.contains(event.target)) {
+                element.remove();
+                this.sectionsCountValue--;
+            }
+        });
     }
 }
