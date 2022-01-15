@@ -17,6 +17,9 @@
                 <h5 class="card-title">{{ tracker.name }}</h5>
 
                 <a href="{{ path('get_tracker', {id: tracker.id}) }}" class="card-link">Show</a>
+                <a href="{{ path('get_tracker_overlay_total', {id: tracker.id}) }}" class="card-link">
+                    Total Deaths Overlay
+                </a>
             </div>
         </div>
     {% endfor %}
