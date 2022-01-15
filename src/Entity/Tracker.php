@@ -41,6 +41,9 @@ class Tracker
     ]
     protected Collection $sections;
 
+    #[ORM\Column(type: 'string', length: 255)]
+    private $commandName;
+
     public function __construct()
     {
         $this->sections = new ArrayCollection();
@@ -111,6 +114,18 @@ class Tracker
         if ($this->sections->removeElement($section) && $section->getTracker() === $this) {
             $section->setTracker(null);
         }
+
+        return $this;
+    }
+
+    public function getCommandName(): ?string
+    {
+        return $this->commandName;
+    }
+
+    public function setCommandName(string $commandName): self
+    {
+        $this->commandName = $commandName;
 
         return $this;
     }

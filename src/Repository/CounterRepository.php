@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Counter;
+use App\Entity\Tracker;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -19,32 +20,21 @@ class CounterRepository extends ServiceEntityRepository
         parent::__construct($registry, Counter::class);
     }
 
-    // /**
-    //  * @return Counter[] Returns an array of Counter objects
-    //  */
-    /*
-    public function findByExampleField($value)
+    /**
+     * @throws \Doctrine\ORM\NonUniqueResultException
+     */
+    public function findByAliasInTracker(string $alias, Tracker $tracker): ?Counter
     {
-        return $this->createQueryBuilder('c')
-            ->andWhere('c.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('c.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
-    }
-    */
+        $qb = $this->createQueryBuilder('c');
 
-    /*
-    public function findOneBySomeField($value): ?Counter
-    {
-        return $this->createQueryBuilder('c')
-            ->andWhere('c.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
+        $qb
+            ->join('c.section', 's')
+            ->join('s.tracker', 't')
+            ->where('s.tracker = :tracker')
+            ->andWhere('c.alias = :alias')
+            ->setParameter(':alias', $alias)
+            ->setParameter(':tracker', $tracker);
+
+        return $qb->getQuery()->getOneOrNullResult();
     }
-    */
 }
