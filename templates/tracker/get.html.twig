@@ -4,33 +4,32 @@
 
 {% block body %}
     {% for section in tracker.sections %}
-        <div>
+        <div class="my-4">
             <h5>{{ section.title }}</h5>
 
-            <table class="table">
-                <thead>
-                <tr>
-                    <th>Cause</th>
-                    <th>Deaths</th>
-                </tr>
-                </thead>
-                <tbody>
-                {% for death in section.deaths %}
-                    <tr {{ death.successful ? 'class="table-success"': '' }}>
-                        <td data-bs-toggle="tooltip" data-bs-placement="top"
-                            title="{{ death.alias }}">{{ death.cause }}</td>
-                        <td>{{ death.deaths }}</td>
-                    </tr>
-                {% endfor %}
-                </tbody>
+            <div class="container">
+                <div class="row border-bottom border-2 border-dark">
+                    <div class="col-11">
+                        <b>Cause</b>
+                    </div>
 
-                <tfoot>
-                <tr>
-                    <th>Total</th>
-                    <th>{{ section.totalDeaths() }}</th>
-                </tr>
-                </tfoot>
-            </table>
+                    <div class="col-1">
+                        <b>Deaths</b>
+                    </div>
+                </div>
+
+                {% for death in section.deaths %}
+                    <div class="row p-1 {{ death.successful ? 'bg-success' : '' }}" style="--bs-bg-opacity: .5">
+                        <div class="col-11"
+                             data-bs-toggle="tooltip"
+                             data-bs-placement="top"
+                             title="{{ death.alias }}">
+                            {{ death.cause }}
+                        </div>
+                        <div class="col-1">{{ death.deaths }}</div>
+                    </div>
+                {% endfor %}
+            </div>
         </div>
     {% endfor %}
 {% endblock %}

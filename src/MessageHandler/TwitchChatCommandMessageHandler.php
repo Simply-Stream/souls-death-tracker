@@ -2,8 +2,7 @@
 
 namespace App\MessageHandler;
 
-use App\Event\TrackerCommandKilledEvent;
-use App\Event\TrackerCommandUpdateEvent;
+use App\Event\CommandExecutionEvent;
 use App\Message\TwitchChatCommandMessage;
 use Symfony\Component\Messenger\Handler\MessageHandlerInterface;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
@@ -28,20 +27,7 @@ final class TwitchChatCommandMessageHandler implements MessageHandlerInterface
 
         if ($channel && $isCommand) {
             $command = substr(explode(' ', $content['trailing'])[0], 2);
-            $event = null;
-
-            switch ($command) {
-                case self::CHAT_COMMAND_TRACKER_NAME:
-                    $event = new TrackerCommandUpdateEvent($content);
-                    break;
-                case self::CHAT_COMMAND_SUCCESS_NAME:
-                    $event = new TrackerCommandKilledEvent($content);
-                    break;
-            }
-
-            if ($event) {
-                $this->eventDispatcher->dispatch($event);
-            }
+            $this->eventDispatcher->dispatch(new CommandExecutionEvent($command, $channel, $content));
         }
     }
 }
