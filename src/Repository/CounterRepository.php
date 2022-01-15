@@ -23,7 +23,7 @@ class CounterRepository extends ServiceEntityRepository
     /**
      * @throws \Doctrine\ORM\NonUniqueResultException
      */
-    public function findByAliasInTracker(string $alias, Tracker $tracker): ?Counter
+    public function findOneByAliasInTracker(string $alias, Tracker $tracker): ?Counter
     {
         $qb = $this->createQueryBuilder('c');
 
@@ -36,5 +36,18 @@ class CounterRepository extends ServiceEntityRepository
             ->setParameter(':tracker', $tracker);
 
         return $qb->getQuery()->getOneOrNullResult();
+    }
+
+    public function findByTracker(Tracker $tracker): array
+    {
+        $qb = $this->createQueryBuilder('c');
+
+        $qb
+            ->join('c.section', 's')
+            ->join('s.tracker', 't')
+            ->where('s.tracker = :tracker')
+            ->setParameter(':tracker', $tracker);
+
+        return $qb->getQuery()->getResult();
     }
 }

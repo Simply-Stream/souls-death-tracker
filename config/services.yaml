@@ -33,3 +33,7 @@ services:
     App\EventSubscriber\TwitchChatcommandSubscriber:
         arguments:
             $producer: '@old_sound_rabbit_mq.send_chat_message_producer'
+
+    App\EventSubscriber\TrackerCommandEventSubscriber:
+        arguments:
+            $producer: '@old_sound_rabbit_mq.send_chat_message_producer'

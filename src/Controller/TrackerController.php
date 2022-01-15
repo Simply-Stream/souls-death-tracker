@@ -72,4 +72,21 @@ class TrackerController extends AbstractController
             'total' => $total,
         ]);
     }
+
+    #[Route('/tracker/{id}/overlay/total', name: 'get_tracker_overlay_total')]
+    public function getTrackerOverlayTotal(string $id, TrackerRepository $trackerRepository): Response
+    {
+        $tracker = $trackerRepository->find($id);
+        $total = 0;
+
+        foreach ($tracker->getSections() as $section) {
+            foreach ($section->getDeaths() as $death) {
+                $total += $death->getDeaths();
+            }
+        }
+
+        return $this->render('tracker/overlay-total.html.twig', [
+            'total' => $total,
+        ]);
+    }
 }
