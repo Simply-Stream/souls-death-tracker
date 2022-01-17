@@ -1,0 +1,99 @@
+---
+-   name: Create cloud server
+    import_playbook: hetzner.yaml
+
+-   name: Setup webserver
+    hosts: webserver
+    user: root
+    roles:
+        - nginx
+
+-   name: Create database server
+    import_playbook: database.yaml
+
+-   name: Install postgresql
+    hosts: database
+    user: root
+    roles:
+        - postgresql
+
+-   name: Make sure psycopg2-binary is installed
+    hosts: database
+    remote_user: root
+    tasks:
+        -   apt:
+                name: python3-pip
+                state: present
+        -   pip:
+                name: psycopg2-binary
+                state: present
+                executable: pip3
+
+-   name: Create database simply-stream-tracker on database hosts
+    hosts: database
+    remote_user: root
+    become: yes
+    become_user: postgres
+    tasks:
+        -   community.postgresql.postgresql_db:
+                name: simply-stream-tracker
+                encoding: UTF-8
+
+-   name: Create user for database "simply-stream-tracker" on database hosts
+    hosts: database
+    remote_user: root
+    become: yes
+    become_user: postgres
+    tasks:
+        -   community.postgresql.postgresql_user:
+                db: simply-stream-tracker
+                name: symfony-tracker-user
+                password: "{{ tracker_user_password }}"
+
+-   name: Update password for user postgres
+    hosts: database
+    remote_user: root
+    become: yes
+    become_user: postgres
+    tasks:
+        -   community.postgresql.postgresql_user:
+                name: postgres
+                password: "{{ postgres_user_password }}"
+
+-   name: Remove python3-pip and psycopg2-binary
+    hosts: database
+    remote_user: root
+    tasks:
+        -   pip:
+                name: psycopg2-binary
+                state: absent
+                executable: pip3
+        -   apt:
+                name: python3-pip
+                state: absent
+
+-   name: Cleanup apt
+    hosts: all
+    user: root
+    tasks:
+        -   apt:
+                autoremove: yes
+                autoclean: yes
+
+-   name: Copy project to webserver
+    hosts:
+        - webserver
+    remote_user: root
+    tasks:
+        -   synchronize:
+                src: ../../
+                dest: /var/www/api
+                rsync_opts:
+                    - "--exclude=.git"
+                    - "--exclude=bin"
+                    - "--exclude=var/cache"
+                    - "--exclude=var/log"
+                    - "--exclude=.env.*"
+                    - "--exclude=*.lock"
+                    - "--exclude=.ansible"
+                    - "--exclude=.docker*"

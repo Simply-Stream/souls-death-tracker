@@ -1,0 +1,8 @@
+---
+-   name: Create Basic Server
+    become: false
+    hosts: localhost
+    connection: local
+    gather_facts: false
+    roles:
+        - hcloud-webserver
