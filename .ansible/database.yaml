@@ -1,0 +1,8 @@
+---
+-   name: Create database server
+    become: false
+    hosts: localhost
+    connection: local
+    gather_facts: false
+    roles:
+        - hcloud-database

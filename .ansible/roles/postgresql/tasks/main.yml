@@ -1,0 +1,39 @@
+---
+-   name: Update apt cache
+    apt:
+        update_cache: yes
+        cache_valid_time: 3600
+
+-   name: "Install postgresql-{{ postgresql_version }}"
+    apt:
+        name: "postgresql-{{ postgresql_version }}"
+        state: present
+
+-   name: Install postgresql-contrib
+    apt:
+        name: "postgresql-contrib"
+        state: present
+
+-   name: Grant user symfony-tracker-user from network 10.0.0.0/24 access for replication with client cert authentication
+    community.postgresql.postgresql_pg_hba:
+        dest: /etc/postgresql/12/main/pg_hba.conf
+        contype: host
+        source: 10.0.0.0/24
+        users: symfony-tracker-user
+        databases: simply-stream-tracker
+
+-   name: Deny everything and enable UFW
+    community.general.ufw:
+        state: enabled
+        policy: deny
+
+-   name: Open postgres port for 10.0.0.0/24 network
+    community.general.ufw:
+        rule: allow
+        port: 5432
+        src: 10.0.0.0/24
+
+-   name: Allow OpenSSH access
+    community.general.ufw:
+        rule: allow
+        name: OpenSSH

@@ -1,0 +1,36 @@
+---
+-   name: Add PHP repository
+    apt_repository:
+        repo: ppa:ondrej/php
+
+-   name: Update apt cache
+    apt:
+        update_cache: yes
+        cache_valid_time: 3600
+
+-   name: Install packages for nginx
+    apt:
+        name: "nginx"
+        state: present
+
+-   name: Copy nginx default host to server
+    template:
+        src: ../templates/default.conf.j2
+        dest: /etc/nginx/sites-available/default
+    register: defaulthost
+
+-   name: Install PHP of version {{ php_version }}
+    apt:
+        name:
+            - "php{{ php_version }}-fpm"
+            - "php{{ php_version }}-pgsql"
+            - "php{{ php_version }}-xml"
+        state: present
+    register: php
+
+-   name: Restart nginx service
+    become: true
+    service:
+        name: nginx
+        state: restarted
+    when: defaulthost.changed

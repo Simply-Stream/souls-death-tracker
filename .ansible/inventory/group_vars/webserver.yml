@@ -1,0 +1,5 @@
+---
+nginx_version: 1.18.0
+nginx_root: /srv/www/api/public
+
+php_version: 8.1
