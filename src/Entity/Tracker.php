@@ -35,7 +35,7 @@ class Tracker
     protected ?User $owner;
 
     #[
-        ORM\OneToMany(mappedBy: "tracker", targetEntity: Section::class, orphanRemoval: true),
+        ORM\OneToMany(mappedBy: "tracker", targetEntity: Section::class, cascade: ['persist', 'remove'], orphanRemoval: true),
         ORM\OrderBy(['id' => 'ASC']),
         Groups('tracker:read')
     ]

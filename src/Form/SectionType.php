@@ -17,8 +17,9 @@ class SectionType extends AbstractType
             ->add('causes', CollectionType::class, [
                 'entry_type' => CauseType::class,
                 'allow_add' => true,
+                'allow_delete' => true,
                 'prototype_name' => '__NAME__',
-                'property_path' => 'deaths'
+                'property_path' => 'deaths',
             ]);
     }
 

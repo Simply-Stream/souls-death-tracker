@@ -16,7 +16,10 @@ class Section
     #[ORM\Id, ORM\GeneratedValue, ORM\Column]
     protected ?int $id;
 
-    #[ORM\OneToMany(mappedBy: "section", targetEntity: Counter::class), ORM\OrderBy(['id' => 'ASC'])]
+    #[
+        ORM\OneToMany(mappedBy: "section", targetEntity: Counter::class, cascade: ['remove', 'persist']),
+        ORM\OrderBy(['id' => 'ASC'])
+    ]
     protected Collection $deaths;
 
     #[ORM\ManyToOne(inversedBy: "sections"), ORM\JoinColumn(nullable: false)]

@@ -13,7 +13,7 @@ class Counter
     protected $id;
 
     #[ORM\Column]
-    protected int $deaths = 0;
+    protected ?int $deaths = 0;
 
     #[ORM\Column(length: 255)]
     protected ?string $cause;
