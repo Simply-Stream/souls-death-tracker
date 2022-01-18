@@ -2,9 +2,11 @@
 
 namespace App\Controller;
 
+use App\Entity\Section;
 use App\Entity\Tracker;
 use App\Form\TrackerType;
 use App\Repository\TrackerRepository;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormFactoryInterface;
@@ -87,6 +89,72 @@ class TrackerController extends AbstractController
 
         return $this->render('tracker/overlay-total.html.twig', [
             'total' => $total,
+        ]);
+    }
+
+    // @TODO: This is hella inefficient and needs to be re-done!
+    //        But for now it's ok
+    #[Route('/tracker/{id}/edit', name: 'edit_tracker')]
+    public function editTracker(
+        string $id,
+        Request $request,
+        TrackerRepository $trackerRepository,
+        FormFactoryInterface $formFactory,
+        EntityManagerInterface $entityManager
+    ): Response {
+        if (null === $tracker = $trackerRepository->find($id)) {
+            throw $this->createNotFoundException('No tracker found for id ' . $id);
+        }
+
+        $form = $formFactory->create(TrackerType::class, $tracker, [
+            'csrf_protection' => false,
+        ]);
+
+        $originalSections = new ArrayCollection($tracker->getSections()->toArray());
+        $originalDeaths = new ArrayCollection();
+
+        /** @var Section $section */
+        foreach ($originalSections as $section) {
+            foreach ($section->getDeaths() as $death) {
+                $originalDeaths->add($death);
+            }
+        }
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            /** @var Tracker $newTracker */
+            $newTracker = $form->getData();
+
+            // Check if section needs to be added
+            foreach ($newTracker->getSections() as $section) {
+                if (false === $originalSections->contains($section)) {
+                    $section->setTracker($tracker);
+                }
+
+                foreach ($originalDeaths as $death) {
+                    if ($death->getSection() === $section &&
+                        false === $section->getDeaths()->contains($death)) {
+                        $entityManager->remove($death);
+                    }
+                }
+            }
+
+            // Check if section needs to be removed
+            foreach ($originalSections as $section) {
+                if (false === $newTracker->getSections()->contains($section)) {
+                    $entityManager->remove($section);
+                }
+            }
+
+            $entityManager->persist($newTracker);
+            $entityManager->flush();
+
+            return $this->redirect('/tracker/' . $newTracker->getId());
+        }
+
+        return $this->render('tracker/edit.html.twig', [
+            'form' => $form->createView(),
         ]);
     }
 }

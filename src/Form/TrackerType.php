@@ -18,6 +18,7 @@ class TrackerType extends AbstractType
             ->add('sections', CollectionType::class, [
                 'entry_type' => SectionType::class,
                 'allow_add' => true,
+                'allow_delete' => true,
             ]);
     }
 

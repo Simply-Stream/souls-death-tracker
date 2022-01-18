@@ -4,6 +4,8 @@
 
 {% block body %}
     <div {{ stimulus_controller('deaths', {mercureUrl: mercure('https://simply-stream.com/tracker/{id}')}) }}>
+        <h3>{{ tracker.name }}</h3> <a href="{{ path('edit_tracker', {id: tracker.id}) }}">Edit</a>
+
         {% for section in tracker.sections %}
             <div class="my-4">
                 <h5>{{ section.title }}</h5>

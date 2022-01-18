@@ -18,13 +18,12 @@
             causesPrototype: formMacros.cause_item(form.causes.vars.prototype)
         }) }}>
             <div {{ stimulus_target('section-create', 'causes') }}>
-                <b>{{ form_label(form.causes) }}
-                    <button type="button" class="btn fas fa-plus" data-action="section-create#addCause"></button>
+                <b>{{ form_label(form.causes) }}</b>
+                <button type="button" class="btn fas fa-plus" data-action="section-create#addCause"></button>
 
-                    {% for cause in form.causes %}
-                        {{ formMacros.cause_item(cause) }}
-                    {% endfor %}
-                </b>
+                {% for cause in form.causes %}
+                    {{ formMacros.cause_item(cause) }}
+                {% endfor %}
             </div>
         </div>
 
@@ -38,13 +37,14 @@
             {{ form_widget(form.cause, {'attr': {'class': 'form-control'}}) }}
             {{ form_widget(form.alias, {'attr': {'class': 'form-control'}}) }}
             <span class="input-group-text">Deaths</span>
-            {{ form_widget(form.deaths, {'attr': {'class': 'form-control'}, 'value': 0}) }}
+            {{ form_widget(form.deaths, {'attr': {'class': 'form-control'}, 'value': form.deaths.vars.value |default(0)}) }}
+            <button type="button" class="btn align-self-center fa fa-trash-alt" aria-label="Close"
+                    data-action="section-create#removeCause"></button>
         </div>
     </div>
 {% endmacro %}
 
 {% import _self as formMacros %}
-
 <div {{ stimulus_controller('tracker-create', {
     sectionsPrototype: formMacros.section_item(form.sections.vars.prototype)
 }) }}>
