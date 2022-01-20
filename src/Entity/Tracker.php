@@ -1,48 +1,24 @@
 <?php
 
-namespace App\Entity;
+namespace SimplyStream\SoulsDeathBundle\Entity;
 
-use ApiPlatform\Core\Annotation\ApiResource;
-use App\Repository\TrackerRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
-use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Security\Core\User\UserInterface;
 
-#[
-    ApiResource(
-        collectionOperations: ['get', 'post'],
-        itemOperations: [
-            'get',
-            'delete' => ['security' => 'object.getOwner() == user'],
-            'put' // => ['security' => 'object.getOwner() == user'],
-        ]
-    ),
-    ORM\Entity(repositoryClass: TrackerRepository::class)
-]
 class Tracker
 {
-    #[ORM\Id, ORM\GeneratedValue, ORM\Column]
     protected ?int $id;
 
-    #[ORM\Column(length: 255), Groups('tracker:read')]
     protected ?string $name;
 
-    #[ORM\ManyToOne]
+    private $commandName;
+
     protected ?Game $game;
 
-    #[ORM\ManyToOne(inversedBy: "trackers"), ORM\JoinColumn(nullable: false)]
-    protected ?User $owner;
+    protected ?UserInterface $owner;
 
-    #[
-        ORM\OneToMany(mappedBy: "tracker", targetEntity: Section::class, cascade: ['persist', 'remove'], orphanRemoval: true),
-        ORM\OrderBy(['id' => 'ASC']),
-        Groups('tracker:read')
-    ]
     protected Collection $sections;
-
-    #[ORM\Column(type: 'string', length: 255)]
-    private $commandName;
 
     public function __construct()
     {
@@ -62,6 +38,18 @@ class Tracker
     public function setName(string $name): self
     {
         $this->name = $name;
+
+        return $this;
+    }
+
+    public function getCommandName(): ?string
+    {
+        return $this->commandName;
+    }
+
+    public function setCommandName(string $commandName): self
+    {
+        $this->commandName = $commandName;
 
         return $this;
     }
@@ -114,18 +102,6 @@ class Tracker
         if ($this->sections->removeElement($section) && $section->getTracker() === $this) {
             $section->setTracker(null);
         }
-
-        return $this;
-    }
-
-    public function getCommandName(): ?string
-    {
-        return $this->commandName;
-    }
-
-    public function setCommandName(string $commandName): self
-    {
-        $this->commandName = $commandName;
 
         return $this;
     }

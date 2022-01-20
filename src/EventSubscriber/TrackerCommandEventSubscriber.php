@@ -1,6 +1,6 @@
 <?php
 
-namespace App\EventSubscriber;
+namespace SimplyStream\SoulsDeathBundle\EventSubscriber;
 
 use App\Event\CommandExecutionEvent;
 use App\Repository\CounterRepository;

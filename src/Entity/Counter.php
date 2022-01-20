@@ -1,30 +1,19 @@
 <?php
 
-namespace App\Entity;
+namespace SimplyStream\SoulsDeathBundle\Entity;
 
-use ApiPlatform\Core\Annotation\ApiResource;
-use App\Repository\CounterRepository;
-use Doctrine\ORM\Mapping as ORM;
-
-#[ApiResource, ORM\Entity(repositoryClass: CounterRepository::class)]
 class Counter
 {
-    #[ORM\Id, ORM\GeneratedValue, ORM\Column(type: "integer")]
     protected $id;
 
-    #[ORM\Column]
     protected ?int $deaths = 0;
 
-    #[ORM\Column(length: 255)]
     protected ?string $cause;
 
-    #[ORM\ManyToOne(inversedBy: "deaths")]
     protected ?Section $section;
 
-    #[ORM\Column(length: 255, nullable: true)]
     protected ?string $alias;
 
-    #[ORM\Column(options: ["default" => false])]
     protected bool $successful = false;
 
     public function getId(): ?int
