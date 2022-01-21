@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Form;
+namespace SimplyStream\SoulsDeathBundle\Form;
 
-use App\Entity\Counter;
+use SimplyStream\SoulsDeathBundle\Entity\Counter;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;

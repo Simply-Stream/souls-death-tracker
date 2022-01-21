@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Event;
+namespace SimplyStream\SoulsDeathBundle\Event;
 
 use Symfony\Contracts\EventDispatcher\Event;
 

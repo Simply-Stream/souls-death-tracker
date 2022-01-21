@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Repository;
+namespace SimplyStream\SoulsDeathBundle\Repository;
 
-use App\Entity\Counter;
-use App\Entity\Tracker;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use SimplyStream\SoulsDeathBundle\Entity\Counter;
+use SimplyStream\SoulsDeathBundle\Entity\Tracker;
 
 /**
  * @method Counter|null find($id, $lockMode = null, $lockVersion = null)

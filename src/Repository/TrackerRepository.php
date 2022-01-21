@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Repository;
+namespace SimplyStream\SoulsDeathBundle\Repository;
 
-use App\Entity\Tracker;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use SimplyStream\SoulsDeathBundle\Entity\Tracker;
 
 /**
  * @method Tracker|null find($id, $lockMode = null, $lockVersion = null)

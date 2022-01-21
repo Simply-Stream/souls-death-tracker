@@ -3,11 +3,12 @@
 namespace SimplyStream\SoulsDeathBundle;
 
 use SimplyStream\SoulsDeathBundle\DependencyInjection\SimplyStreamSoulsDeathExtension;
+use Symfony\Component\DependencyInjection\Extension\ExtensionInterface;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
 final class SimplyStreamSoulsDeathBundle extends Bundle
 {
-    public function getContainerExtension()
+    public function getContainerExtension(): ?ExtensionInterface
     {
         if (null === $this->extension) {
             $this->extension = new SimplyStreamSoulsDeathExtension();
@@ -16,7 +17,7 @@ final class SimplyStreamSoulsDeathBundle extends Bundle
         return $this->extension;
     }
 
-    public function getPath()
+    public function getPath(): string
     {
         return \dirname(__DIR__);
     }

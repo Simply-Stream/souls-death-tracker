@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Controller;
+namespace SimplyStream\SoulsDeathBundle\Controller;
 
-use App\Entity\Section;
-use App\Entity\Tracker;
-use App\Form\TrackerType;
-use App\Repository\TrackerRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManagerInterface;
+use SimplyStream\SoulsDeathBundle\Entity\Section;
+use SimplyStream\SoulsDeathBundle\Entity\Tracker;
+use SimplyStream\SoulsDeathBundle\Form\TrackerType;
+use SimplyStream\SoulsDeathBundle\Repository\TrackerRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\Request;

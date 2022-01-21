@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Form;
+namespace SimplyStream\SoulsDeathBundle\Form;
 
-use App\Entity\Tracker;
+use SimplyStream\SoulsDeathBundle\Entity\Tracker;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;

@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Messenger;
+namespace SimplyStream\SoulsDeathBundle\Messenger;
 
-use App\Message\TwitchChatCommandMessage;
+use SimplyStream\SoulsDeathBundle\Message\TwitchChatCommandMessage;
 use Symfony\Component\Messenger\Envelope;
 use Symfony\Component\Messenger\Transport\Serialization\SerializerInterface;
 use Symfony\Component\Serializer\SerializerInterface as Serializer;

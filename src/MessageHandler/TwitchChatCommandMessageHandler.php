@@ -1,17 +1,14 @@
 <?php
 
-namespace App\MessageHandler;
+namespace SimplyStream\SoulsDeathBundle\MessageHandler;
 
-use App\Event\CommandExecutionEvent;
-use App\Message\TwitchChatCommandMessage;
+use SimplyStream\SoulsDeathBundle\Event\CommandExecutionEvent;
+use SimplyStream\SoulsDeathBundle\Message\TwitchChatCommandMessage;
 use Symfony\Component\Messenger\Handler\MessageHandlerInterface;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 final class TwitchChatCommandMessageHandler implements MessageHandlerInterface
 {
-    public const CHAT_COMMAND_TRACKER_NAME = 'tracker';
-    public const CHAT_COMMAND_SUCCESS_NAME = 'killed';
-
     protected EventDispatcherInterface $eventDispatcher;
 
     public function __construct(EventDispatcherInterface $eventDispatcher)

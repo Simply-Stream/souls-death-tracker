@@ -1,9 +1,0 @@
-knpu_oauth2_client:
-    clients:
-        # configure your clients as described here: https://github.com/knpuniversity/oauth2-client-bundle#configuration
-        twitch:
-            type: twitch
-            client_id: '%env(TWITCH_ID)%'
-            client_secret: '%env(TWITCH_SECRET)%'
-            redirect_route: app_check_twitch
-            redirect_params: {}

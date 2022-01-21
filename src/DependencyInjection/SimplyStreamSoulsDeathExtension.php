@@ -2,10 +2,10 @@
 
 namespace SimplyStream\SoulsDeathBundle\DependencyInjection;
 
-use App\Repository\CounterRepository;
-use App\Repository\GameRepository;
-use App\Repository\SectionRepository;
-use App\Repository\TrackerRepository;
+use SimplyStream\SoulsDeathBundle\Repository\CounterRepository;
+use SimplyStream\SoulsDeathBundle\Repository\GameRepository;
+use SimplyStream\SoulsDeathBundle\Repository\SectionRepository;
+use SimplyStream\SoulsDeathBundle\Repository\TrackerRepository;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
