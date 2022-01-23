@@ -1,0 +1,49 @@
+<?xml version="1.0" ?>
+
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+    <services>
+        <service class="%simplystream.soulsdeath.repository.tracker.class%" lazy="true"
+                 id="soulsdeath.repository.tracker" public="true">
+            <factory service="Doctrine\Common\Persistence\ManagerRegistry" method="getRepository"/>
+            <argument>%simplystream.soulsdeath.model.tracker.class%</argument>
+        </service>
+
+        <service class="%simplystream.soulsdeath.repository.user.class%" lazy="true"
+                 id="soulsdeath.repository.user" public="true">
+            <factory service="Doctrine\Common\Persistence\ManagerRegistry" method="getRepository"/>
+            <argument>%simplystream.soulsdeath.model.user.class%</argument>
+        </service>
+
+        <service class="%simplystream.soulsdeath.repository.counter.class%" lazy="true"
+                 id="soulsdeath.repository.counter" public="true">
+            <factory service="Doctrine\Common\Persistence\ManagerRegistry" method="getRepository"/>
+            <argument>%simplystream.soulsdeath.model.counter.class%</argument>
+        </service>
+
+        <service class="%simplystream.soulsdeath.repository.game.class%" lazy="true"
+                 id="soulsdeath.repository.game" public="true">
+            <factory service="Doctrine\Common\Persistence\ManagerRegistry" method="getRepository"/>
+            <argument>%simplystream.soulsdeath.model.game.class%</argument>
+        </service>
+
+        <service id="simplystream.souls_death.event_subscriber.tracker_command_event_subscriber"
+                 class="SimplyStream\SoulsDeathBundle\EventSubscriber\TrackerCommandEventSubscriber">
+            <argument key="$userRepository" type="service" id="soulsdeath.repository.user"/>
+            <argument key="$trackerRepository" type="service" id="soulsdeath.repository.tracker"/>
+            <argument key="$counterRepository" type="service" id="soulsdeath.repository.counter"/>
+            <argument key="$entityManager" type="service" id="doctrine.orm.entity_manager"/>
+            <argument key="$hub" type="service" id="Symfony\Component\Mercure\HubInterface"/>
+            <!-- @TODO: Change this to a nicer way that does not force a producer name -->
+            <argument key="$producer" type="service" id="old_sound_rabbit_mq.send_chat_message_producer"/>
+
+            <tag name="kernel.event_subscriber"/>
+        </service>
+
+        <service class="SimplyStream\SoulsDeathBundle\Messenger\TwitchChatMessageSerializer"
+                 id="simplystream.souls_death.messenger.serializer.chatmessage" public="true">
+            <argument id="Symfony\Component\Serializer\SerializerInterface" type="service"/>
+        </service>
+    </services>
+</container>

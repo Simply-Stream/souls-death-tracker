@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Form;
+namespace SimplyStream\SoulsDeathBundle\Form;
 
-use App\Entity\Section;
+use SimplyStream\SoulsDeathBundle\Entity\Section;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\FormBuilderInterface;

@@ -1,0 +1,16 @@
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping"
+                  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                  xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping
+                   https://raw.github.com/doctrine/doctrine2/master/doctrine-mapping.xsd">
+    <entity name="SimplyStream\SoulsDeathBundle\Entity\Section" table="soulsdeath_section">
+        <id name="id" type="integer" column="id">
+            <generator/>
+        </id>
+
+        <field name="title" length="255"/>
+
+        <one-to-many field="deaths" target-entity="SimplyStream\SoulsDeathBundle\Entity\Counter" mapped-by="section"/>
+
+        <many-to-one field="tracker" inversed-by="sections"/>
+    </entity>
+</doctrine-mapping>

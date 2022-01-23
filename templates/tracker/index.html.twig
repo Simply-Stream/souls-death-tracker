@@ -1,26 +1,20 @@
-{% extends 'base.html.twig' %}
+<h2>Trackers</h2>
 
-{% block title %}Hello TrackerController!{% endblock %}
+<div class="create-tracker-wrapper">
+    <h3>Create new tracker</h3>
 
-{% block body %}
-    <h2>Trackers</h2>
+    {% include '@SimplyStreamSoulsDeath/tracker/_tracker-form.html.twig' with {form} only %}
+</div>
 
-    <div class="create-tracker-wrapper">
-        <h3>Create new tracker</h3>
+{% for tracker in trackers %}
+    <div class="card" style="width: 18rem;">
+        <div class="card-body">
+            <h5 class="card-title">{{ tracker.name }}</h5>
 
-        {% include 'tracker/_tracker-form.html.twig' with {form} only %}
-    </div>
-
-    {% for tracker in trackers %}
-        <div class="card" style="width: 18rem;">
-            <div class="card-body">
-                <h5 class="card-title">{{ tracker.name }}</h5>
-
-                <a href="{{ path('get_tracker', {id: tracker.id}) }}" class="card-link">Show</a>
-                <a href="{{ path('get_tracker_overlay_total', {id: tracker.id}) }}" class="card-link">
-                    Total Deaths Overlay
-                </a>
-            </div>
+            <a href="{{ path('simplystream.get_tracker', {id: tracker.id}) }}" class="card-link">Show</a>
+            <a href="{{ path('simplystream.get_tracker_overlay_total', {id: tracker.id}) }}" class="card-link">
+                Total Deaths Overlay
+            </a>
         </div>
-    {% endfor %}
-{% endblock %}
+    </div>
+{% endfor %}

@@ -1,20 +1,20 @@
 <?php
 
-namespace App\EventSubscriber;
+namespace SimplyStream\SoulsDeathBundle\EventSubscriber;
 
-use App\Event\CommandExecutionEvent;
-use App\Repository\CounterRepository;
-use App\Repository\TrackerRepository;
-use App\Repository\UserRepository;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepositoryInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use OldSound\RabbitMqBundle\RabbitMq\ProducerInterface;
+use SimplyStream\SoulsDeathBundle\Event\CommandExecutionEvent;
+use SimplyStream\SoulsDeathBundle\Repository\CounterRepository;
+use SimplyStream\SoulsDeathBundle\Repository\TrackerRepository;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Mercure\HubInterface;
 use Symfony\Component\Mercure\Update;
 
 class TrackerCommandEventSubscriber implements EventSubscriberInterface
 {
-    protected UserRepository $userRepository;
+    protected ServiceEntityRepositoryInterface $userRepository;
     protected TrackerRepository $trackerRepository;
     protected CounterRepository $counterRepository;
     protected EntityManagerInterface $entityManager;
@@ -22,7 +22,7 @@ class TrackerCommandEventSubscriber implements EventSubscriberInterface
     protected ProducerInterface $producer;
 
     public function __construct(
-        UserRepository $userRepository,
+        ServiceEntityRepositoryInterface $userRepository,
         TrackerRepository $trackerRepository,
         CounterRepository $counterRepository,
         EntityManagerInterface $entityManager,

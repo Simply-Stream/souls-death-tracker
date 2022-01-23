@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Message;
+namespace SimplyStream\SoulsDeathBundle\Message;
 
 final class TwitchChatCommandMessage
 {

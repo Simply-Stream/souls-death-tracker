@@ -1,9 +1,0 @@
-simplystream_twitch_api:
-    # See https://dev.twitch.tv/docs/authentication#registration on how to get client id and secret
-    twitch_id:     '%env(TWITCH_ID)%'
-    twitch_secret: '%env(TWITCH_SECRET)%'
-    # The url your user will be redirected to in authentication process
-    redirect_uri:  '%env(TWITCH_REDIRECT_URI)%'
-    # The secret used in https://dev.twitch.tv/docs/eventsub#subscriptions to validate against manipulation.
-    webhook:
-        secret: '%env(TWITCH_WEBHOOK_SECRET)%'

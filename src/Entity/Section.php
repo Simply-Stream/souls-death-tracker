@@ -1,31 +1,19 @@
 <?php
 
-namespace App\Entity;
+namespace SimplyStream\SoulsDeathBundle\Entity;
 
-use ApiPlatform\Core\Annotation\ApiResource;
-use App\Repository\SectionRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
-use Doctrine\ORM\Mapping as ORM;
 use JetBrains\PhpStorm\Pure;
-use Symfony\Component\Serializer\Annotation\Groups;
 
-#[ApiResource, ORM\Entity(repositoryClass: SectionRepository::class)]
 class Section
 {
-    #[ORM\Id, ORM\GeneratedValue, ORM\Column]
     protected ?int $id;
 
-    #[
-        ORM\OneToMany(mappedBy: "section", targetEntity: Counter::class, cascade: ['remove', 'persist']),
-        ORM\OrderBy(['id' => 'ASC'])
-    ]
     protected Collection $deaths;
 
-    #[ORM\ManyToOne(inversedBy: "sections"), ORM\JoinColumn(nullable: false)]
     protected ?Tracker $tracker;
 
-    #[ORM\Column(length: 255), Groups(['tracker:read', 'section:read'])]
     protected ?string $title;
 
     public function __construct()

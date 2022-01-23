@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Repository;
+namespace SimplyStream\SoulsDeathBundle\Repository;
 
-use App\Entity\Section;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use SimplyStream\SoulsDeathBundle\Entity\Section;
 
 /**
  * @method Section|null find($id, $lockMode = null, $lockVersion = null)
