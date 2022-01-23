@@ -2,7 +2,7 @@
                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                   xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping
                    https://raw.github.com/doctrine/doctrine2/master/doctrine-mapping.xsd">
-    <entity name="SimplyStream\SoulsDeathBundle\Entity\Tracker">
+    <entity name="SimplyStream\SoulsDeathBundle\Entity\Tracker" table="soulsdeath_tracker">
         <id name="id" type="integer" column="id">
             <generator/>
         </id>
@@ -14,8 +14,8 @@
         <many-to-one field="game"/>
 
         <many-to-one field="owner" inversed-by="trackers"
-                     target-entity="Symfony\Component\Security\Core\User\UserInterface"/>
+                     target-entity="SimplyStream\SoulsDeathBundle\Entity\UserInterface"/>
 
-        <one-to-many field="sections" target-entity="App\Entity\Section" mapped-by="tracker"/>
+        <one-to-many field="sections" target-entity="SimplyStream\SoulsDeathBundle\Entity\Section" mapped-by="tracker"/>
     </entity>
 </doctrine-mapping>

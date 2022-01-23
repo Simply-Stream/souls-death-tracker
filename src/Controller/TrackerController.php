@@ -12,25 +12,36 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
 
 class TrackerController extends AbstractController
 {
-    #[Route('/tracker', name: 'tracker', methods: ['GET'])]
-    public function index(TrackerRepository $trackerRepository, FormFactoryInterface $formFactory): Response
-    {
-        $form = $formFactory->create(TrackerType::class);
+    protected TrackerRepository $trackerRepository;
+    protected FormFactoryInterface $formFactory;
+    protected EntityManagerInterface $entityManager;
 
-        return $this->render('tracker/index.html.twig', [
-            'trackers' => $trackerRepository->findBy(['owner' => $this->getUser()]),
+    public function __construct(
+        TrackerRepository $trackerRepository,
+        FormFactoryInterface $formFactory,
+        EntityManagerInterface $entityManager
+    ) {
+        $this->trackerRepository = $trackerRepository;
+        $this->formFactory = $formFactory;
+        $this->entityManager = $entityManager;
+    }
+
+    public function index(): Response
+    {
+        $form = $this->formFactory->create(TrackerType::class);
+
+        return $this->render('@SimplyStreamSoulsDeath/tracker/index.html.twig', [
+            'trackers' => $this->trackerRepository->findBy(['owner' => $this->getUser()]),
             'form' => $form->createView(),
         ]);
     }
 
-    #[Route('/tracker', name: 'tracker_save', methods: ['POST'])]
-    public function save(Request $request, EntityManagerInterface $entityManager, FormFactoryInterface $formFactory): Response
+    public function save(Request $request): Response
     {
-        $form = $formFactory->create(TrackerType::class, null, [
+        $form = $this->formFactory->create(TrackerType::class, null, [
             'csrf_protection' => false,
         ]);
         $form->handleRequest($request);
@@ -41,15 +52,15 @@ class TrackerController extends AbstractController
             $data->setOwner($this->getUser());
 
             foreach ($data->getSections() as $section) {
-                $entityManager->persist($section);
+                $this->entityManager->persist($section);
 
                 foreach ($section->getDeaths() as $death) {
-                    $entityManager->persist($death);
+                    $this->entityManager->persist($death);
                 }
             }
 
-            $entityManager->persist($data);
-            $entityManager->flush();
+            $this->entityManager->persist($data);
+            $this->entityManager->flush();
 
             return $this->redirect('/tracker/' . $data->getId());
         }
@@ -57,10 +68,9 @@ class TrackerController extends AbstractController
         return $this->redirect('/tracker', Response::HTTP_BAD_REQUEST);
     }
 
-    #[Route('/tracker/{id}', name: 'get_tracker')]
-    public function getTracker(string $id, TrackerRepository $trackerRepository): Response
+    public function getTracker(string $id): Response
     {
-        $tracker = $trackerRepository->find($id);
+        $tracker = $this->trackerRepository->find($id);
         $total = 0;
 
         if ($tracker) {
@@ -69,13 +79,12 @@ class TrackerController extends AbstractController
             }
         }
 
-        return $this->render('tracker/get.html.twig', [
+        return $this->render('@SimplyStreamSoulsDeath/tracker/get.html.twig', [
             'tracker' => $tracker,
             'total' => $total,
         ]);
     }
 
-    #[Route('/tracker/{id}/overlay/total', name: 'get_tracker_overlay_total')]
     public function getTrackerOverlayTotal(string $id, TrackerRepository $trackerRepository): Response
     {
         $tracker = $trackerRepository->find($id);
@@ -87,14 +96,11 @@ class TrackerController extends AbstractController
             }
         }
 
-        return $this->render('tracker/overlay-total.html.twig', [
-            'total' => $total,
-        ]);
+        return $this->json($total);
     }
 
     // @TODO: This is hella inefficient and needs to be re-done!
     //        But for now it's ok
-    #[Route('/tracker/{id}/edit', name: 'edit_tracker')]
     public function editTracker(
         string $id,
         Request $request,
@@ -153,7 +159,7 @@ class TrackerController extends AbstractController
             return $this->redirect('/tracker/' . $newTracker->getId());
         }
 
-        return $this->render('tracker/edit.html.twig', [
+        return $this->render('@SimplyStreamSoulsDeath/tracker/edit.html.twig', [
             'form' => $form->createView(),
         ]);
     }

@@ -11,8 +11,6 @@
     ],
     "require": {
         "php": "^8.0",
-        "ext-ctype": "*",
-        "ext-iconv": "*",
         "ext-json": "*",
         "doctrine/orm": "^2.10",
         "php-amqplib/rabbitmq-bundle": "^2.11"

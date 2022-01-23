@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<routes xmlns="http://symfony.com/schema/routing"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://symfony.com/schema/routing
+        http://symfony.com/schema/routing/routing-1.0.xsd">
+    <route id="simplystream.get_tracker" controller="simplystream.tracker_controller::getTracker" path="/{id}"
+           methods="GET"/>
+
+    <route id="simplystream.edit_tracker" controller="simplystream.tracker_controller::editTracker" path="/{id}"
+           methods="GET|POST"/>
+
+    <route id="simplystream.get_tracker_overlay_total"
+           controller="simplystream.tracker_controller::getTrackerOverlayTotal"
+           path="/{id}/overlay/total" methods="GET"/>
+
+    <route id="simplystream.get_trackers" controller="simplystream.tracker_controller::index" path="/" methods="GET"/>
+
+    <route id="simplystream.save_tracker" controller="simplystream.tracker_controller::save" path="/" methods="POST"/>
+</routes>

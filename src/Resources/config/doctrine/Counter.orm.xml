@@ -2,8 +2,7 @@
                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                   xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping
                    https://raw.github.com/doctrine/doctrine2/master/doctrine-mapping.xsd">
-    <mapped-superclass name="SimplyStream\SoulsDeathBundle\Entity\Counter" table="souls_counter"
-                       repository-class="App\Repository\CounterRepository">
+    <entity name="SimplyStream\SoulsDeathBundle\Entity\Counter" table="soulsdeath_counter">
         <id name="id" type="integer" column="id">
             <generator/>
         </id>
@@ -17,5 +16,5 @@
         <field name="successful" type="boolean"/>
 
         <many-to-one field="section" inversed-by="deaths"/>
-    </mapped-superclass>
+    </entity>
 </doctrine-mapping>
