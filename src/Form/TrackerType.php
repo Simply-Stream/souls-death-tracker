@@ -15,6 +15,7 @@ class TrackerType extends AbstractType
     {
         $builder
             ->add('name', TextType::class)
+            ->add('commandName', TextType::class)
             ->add('sections', CollectionType::class, [
                 'entry_type' => SectionType::class,
                 'allow_add' => true,
