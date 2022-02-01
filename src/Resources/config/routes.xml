@@ -7,7 +7,7 @@
     <route id="simplystream.get_tracker" controller="simplystream.tracker_controller::getTracker" path="/{id}"
            methods="GET"/>
 
-    <route id="simplystream.edit_tracker" controller="simplystream.tracker_controller::editTracker" path="/{id}"
+    <route id="simplystream.edit_tracker" controller="simplystream.tracker_controller::editTracker" path="/{id}/edit"
            methods="GET|POST"/>
 
     <route id="simplystream.get_tracker_overlay_total"

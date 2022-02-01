@@ -101,18 +101,12 @@ class TrackerController extends AbstractController
 
     // @TODO: This is hella inefficient and needs to be re-done!
     //        But for now it's ok
-    public function editTracker(
-        string $id,
-        Request $request,
-        TrackerRepository $trackerRepository,
-        FormFactoryInterface $formFactory,
-        EntityManagerInterface $entityManager
-    ): Response {
-        if (null === $tracker = $trackerRepository->find($id)) {
+    public function editTracker(string $id, Request $request): Response {
+        if (null === $tracker = $this->trackerRepository->find($id)) {
             throw $this->createNotFoundException('No tracker found for id ' . $id);
         }
 
-        $form = $formFactory->create(TrackerType::class, $tracker, [
+        $form = $this->formFactory->create(TrackerType::class, $tracker, [
             'csrf_protection' => false,
         ]);
 
@@ -141,7 +135,7 @@ class TrackerController extends AbstractController
                 foreach ($originalDeaths as $death) {
                     if ($death->getSection() === $section &&
                         false === $section->getDeaths()->contains($death)) {
-                        $entityManager->remove($death);
+                        $this->entityManager->remove($death);
                     }
                 }
             }
@@ -149,12 +143,12 @@ class TrackerController extends AbstractController
             // Check if section needs to be removed
             foreach ($originalSections as $section) {
                 if (false === $newTracker->getSections()->contains($section)) {
-                    $entityManager->remove($section);
+                    $this->entityManager->remove($section);
                 }
             }
 
-            $entityManager->persist($newTracker);
-            $entityManager->flush();
+            $this->entityManager->persist($newTracker);
+            $this->entityManager->flush();
 
             return $this->redirect('/tracker/' . $newTracker->getId());
         }

@@ -12,7 +12,7 @@ class Tracker
 
     protected ?string $name;
 
-    private $commandName;
+    protected ?string $commandName;
 
     protected ?Game $game;
 
