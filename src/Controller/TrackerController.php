@@ -85,9 +85,9 @@ class TrackerController extends AbstractController
         ]);
     }
 
-    public function getTrackerOverlayTotal(string $id, TrackerRepository $trackerRepository): Response
+    public function getTrackerOverlayTotal(string $id): Response
     {
-        $tracker = $trackerRepository->find($id);
+        $tracker = $this->trackerRepository->find($id);
         $total = 0;
 
         foreach ($tracker->getSections() as $section) {
@@ -101,7 +101,8 @@ class TrackerController extends AbstractController
 
     // @TODO: This is hella inefficient and needs to be re-done!
     //        But for now it's ok
-    public function editTracker(string $id, Request $request): Response {
+    public function editTracker(string $id, Request $request): Response
+    {
         if (null === $tracker = $this->trackerRepository->find($id)) {
             throw $this->createNotFoundException('No tracker found for id ' . $id);
         }
