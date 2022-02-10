@@ -1,35 +1,35 @@
-<div {{ stimulus_controller('deaths', {mercureUrl: mercure('https://simply-stream.com/tracker/{id}')}) }}>
-    <h3>{{ tracker.name }}</h3> <a href="{{ path('simplystream.edit_tracker', {id: tracker.id}) }}">Edit</a>
+<h3>{{ tracker.name }}</h3>
+<a href="{{ path('simplystream.edit_tracker', {id: tracker.id}) }}">Edit</a>
+<a href="{{ path('simplystream.get_tracker_overlay_total', {id: tracker.id}) }}">Total</a>
 
-    {% for section in tracker.sections %}
-        <div class="my-4">
-            <h5>{{ section.title }}</h5>
+{% for section in tracker.sections %}
+    <div class="my-4">
+        <h5>{{ section.title }}</h5>
 
-            <div class="container">
-                <div class="row border-bottom border-2 border-dark">
-                    <div class="col-11">
-                        <b>Cause</b>
-                    </div>
-
-                    <div class="col-1">
-                        <b>Deaths</b>
-                    </div>
+        <div class="container">
+            <div class="row border-bottom border-2 border-dark">
+                <div class="col-11">
+                    <b>Cause</b>
                 </div>
 
-                {% for death in section.deaths %}
-                    <div class="row p-1 {{ death.successful ? 'bg-success' : '' }}"
-                         style="--bs-bg-opacity: .5"
-                         id="{{ death.id }}">
-                        <div class="col-11"
-                             data-bs-toggle="tooltip"
-                             data-bs-placement="top"
-                             title="{{ death.alias }}">
-                            {{ death.cause }}
-                        </div>
-                        <div class="col-1">{{ death.deaths }}</div>
-                    </div>
-                {% endfor %}
+                <div class="col-1">
+                    <b>Deaths</b>
+                </div>
             </div>
+
+            {% for death in section.deaths %}
+                <div class="row p-1 {{ death.successful ? 'bg-success' : '' }}"
+                     style="--bs-bg-opacity: .5"
+                     id="{{ death.id }}">
+                    <div class="col-11"
+                         data-bs-toggle="tooltip"
+                         data-bs-placement="top"
+                         title="{{ death.alias }}">
+                        {{ death.cause }}
+                    </div>
+                    <div class="col-1">{{ death.deaths }}</div>
+                </div>
+            {% endfor %}
         </div>
-    {% endfor %}
-</div>
+    </div>
+{% endfor %}

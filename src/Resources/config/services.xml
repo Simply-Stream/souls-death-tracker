@@ -6,25 +6,25 @@
     <services>
         <service class="%simplystream.soulsdeath.repository.tracker.class%" lazy="true"
                  id="soulsdeath.repository.tracker" public="true">
-            <factory service="Doctrine\Common\Persistence\ManagerRegistry" method="getRepository"/>
+            <argument type="service" id="Doctrine\Common\Persistence\ManagerRegistry"/>
             <argument>%simplystream.soulsdeath.model.tracker.class%</argument>
         </service>
 
         <service class="%simplystream.soulsdeath.repository.user.class%" lazy="true"
                  id="soulsdeath.repository.user" public="true">
-            <factory service="Doctrine\Common\Persistence\ManagerRegistry" method="getRepository"/>
+            <argument type="service" id="Doctrine\Common\Persistence\ManagerRegistry"/>
             <argument>%simplystream.soulsdeath.model.user.class%</argument>
         </service>
 
         <service class="%simplystream.soulsdeath.repository.counter.class%" lazy="true"
                  id="soulsdeath.repository.counter" public="true">
-            <factory service="Doctrine\Common\Persistence\ManagerRegistry" method="getRepository"/>
+            <argument type="service" id="Doctrine\Common\Persistence\ManagerRegistry"/>
             <argument>%simplystream.soulsdeath.model.counter.class%</argument>
         </service>
 
         <service class="%simplystream.soulsdeath.repository.game.class%" lazy="true"
                  id="soulsdeath.repository.game" public="true">
-            <factory service="Doctrine\Common\Persistence\ManagerRegistry" method="getRepository"/>
+            <argument type="service" id="Doctrine\Common\Persistence\ManagerRegistry"/>
             <argument>%simplystream.soulsdeath.model.game.class%</argument>
         </service>
 
@@ -34,9 +34,7 @@
             <argument key="$trackerRepository" type="service" id="soulsdeath.repository.tracker"/>
             <argument key="$counterRepository" type="service" id="soulsdeath.repository.counter"/>
             <argument key="$entityManager" type="service" id="doctrine.orm.entity_manager"/>
-            <argument key="$hub" type="service" id="Symfony\Component\Mercure\HubInterface"/>
-            <!-- @TODO: Change this to a nicer way that does not force a producer name -->
-            <argument key="$producer" type="service" id="old_sound_rabbit_mq.send_chat_message_producer"/>
+            <argument key="$eventDispatcher" type="service" id="event_dispatcher"/>
 
             <tag name="kernel.event_subscriber"/>
         </service>

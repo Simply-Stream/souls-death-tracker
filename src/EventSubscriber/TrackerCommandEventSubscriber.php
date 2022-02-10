@@ -4,13 +4,12 @@ namespace SimplyStream\SoulsDeathBundle\EventSubscriber;
 
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepositoryInterface;
 use Doctrine\ORM\EntityManagerInterface;
-use OldSound\RabbitMqBundle\RabbitMq\ProducerInterface;
 use SimplyStream\SoulsDeathBundle\Event\CommandExecutionEvent;
+use SimplyStream\SoulsDeathBundle\Event\CommandExecutionSuccessEvent;
 use SimplyStream\SoulsDeathBundle\Repository\CounterRepository;
 use SimplyStream\SoulsDeathBundle\Repository\TrackerRepository;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Symfony\Component\Mercure\HubInterface;
-use Symfony\Component\Mercure\Update;
+use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 class TrackerCommandEventSubscriber implements EventSubscriberInterface
 {
@@ -18,23 +17,20 @@ class TrackerCommandEventSubscriber implements EventSubscriberInterface
     protected TrackerRepository $trackerRepository;
     protected CounterRepository $counterRepository;
     protected EntityManagerInterface $entityManager;
-    protected HubInterface $hub;
-    protected ProducerInterface $producer;
+    protected EventDispatcherInterface $eventDispatcher;
 
     public function __construct(
         ServiceEntityRepositoryInterface $userRepository,
         TrackerRepository $trackerRepository,
         CounterRepository $counterRepository,
         EntityManagerInterface $entityManager,
-        HubInterface $hub,
-        ProducerInterface $producer
+        EventDispatcherInterface $eventDispatcher
     ) {
         $this->userRepository = $userRepository;
         $this->trackerRepository = $trackerRepository;
         $this->counterRepository = $counterRepository;
         $this->entityManager = $entityManager;
-        $this->hub = $hub;
-        $this->producer = $producer;
+        $this->eventDispatcher = $eventDispatcher;
     }
 
     /**
@@ -57,51 +53,35 @@ class TrackerCommandEventSubscriber implements EventSubscriberInterface
         ) {
             $command = explode(' ', substr($event->getChatMessage()['trailing'], 2));
             $counter = $this->counterRepository->findOneByAliasInTracker($command[1], $tracker);
-            $updatedCounter = [];
 
             if ($counter) {
                 if (isset($command[2]) && $command[2] === 'killed') {
                     $counter->setSuccessful(true);
-                } else {
-                    $addBy = 1;
-                    if (isset($command[2])) {
-                        $addBy = (int)$command[2];
+                } elseif (isset($command[2])) {
+                    $operator = $command[2][0];
+
+                    if (in_array($operator, ['+', '-', '='])) {
+                        $value = (int)substr($command[2], 1);
+                    } else {
+                        $value = $command[2];
                     }
 
-                    $newDeaths = $counter->getDeaths() + $addBy;
-                    $counter->setDeaths($newDeaths);
+                    $newDeaths = match ($operator) {
+                        '=' => $value,
+                        '-' => $counter->getDeaths() - $value,
+                        default => $counter->getDeaths() + $value,
+                    };
 
-                    $updatedCounter += [
-                        'id' => $counter->getId(),
-                        'cause' => $counter->getCause(),
-                        'alias' => $counter->getAlias(),
-                        'successful' => $counter->getAlias(),
-                        'deaths' => $counter->getDeaths(),
-                    ];
+                    $counter->setDeaths($newDeaths);
+                } else {
+                    $counter->setDeaths($counter->getDeaths() + 1);
                 }
 
                 $this->entityManager->persist($counter);
                 $this->entityManager->flush();
 
-                $this->producer->publish(\json_encode([
-                    'channel' => $user->getUserIdentifier(),
-                    'answer' => "{$user->getDisplayName()} has killed '{$counter->getCause()}' and died {$counter->getDeaths()}x",
-                ], JSON_THROW_ON_ERROR));
-
-                $id = $tracker->getId();
-                $this->hub->publish(new Update("https://simply-stream.com/tracker/${id}", \json_encode([
-                    'updated' => $updatedCounter,
-                ], JSON_THROW_ON_ERROR)));
-
-                $counters = $this->counterRepository->findByTracker($tracker);
-                $total = 0;
-
-                foreach ($counters as $counter) {
-                    $total += $counter->getDeaths();
-                }
-
-                $this->hub->publish(new Update("https://simply-stream.com/tracker/${id}/total",
-                    \json_encode(['total' => $total], JSON_THROW_ON_ERROR)));
+                $event = new CommandExecutionSuccessEvent($counter, $user, $channel);
+                $this->eventDispatcher->dispatch($event);
             }
         }
     }

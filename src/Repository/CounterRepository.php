@@ -38,7 +38,7 @@ class CounterRepository extends ServiceEntityRepository
         return $qb->getQuery()->getOneOrNullResult();
     }
 
-    public function findByTracker(Tracker $tracker): array
+    public function findAllByTracker(Tracker $tracker): array
     {
         $qb = $this->createQueryBuilder('c');
 
