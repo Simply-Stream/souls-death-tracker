@@ -90,13 +90,21 @@ class TrackerController extends AbstractController
         $tracker = $this->trackerRepository->find($id);
         $total = 0;
 
+        if (! $tracker) {
+            $this->createNotFoundException();
+        }
+
         foreach ($tracker->getSections() as $section) {
             foreach ($section->getDeaths() as $death) {
                 $total += $death->getDeaths();
             }
         }
 
-        return $this->json($total);
+        return $this->render(
+            '@SimplyStreamSoulsDeath/tracker/total.html.twig', [
+            'total' => $total,
+            'trackerId' => $tracker->getId(),
+        ]);
     }
 
     // @TODO: This is hella inefficient and needs to be re-done!

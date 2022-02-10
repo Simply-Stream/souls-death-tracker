@@ -13,7 +13,7 @@
         "php": "^8.0",
         "ext-json": "*",
         "doctrine/orm": "^2.10",
-        "php-amqplib/rabbitmq-bundle": "^2.11"
+        "symfony/event-dispatcher": "^5.4"
     },
     "require-dev": {
         "roave/security-advisories": "dev-latest",
