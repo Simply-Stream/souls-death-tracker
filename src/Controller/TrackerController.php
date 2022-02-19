@@ -137,8 +137,18 @@ class TrackerController extends AbstractController
 
             // Check if section needs to be added
             foreach ($newTracker->getSections() as $section) {
+                // @TODO: Fix by adding hidden tracker field to form
                 if (false === $originalSections->contains($section)) {
                     $section->setTracker($tracker);
+                }
+
+                // Check if new death has been added
+                // @TODO: Fix by adding hidden section field to form
+                foreach ($section->getDeaths() as $death) {
+                    if (false === $originalDeaths->contains($death)) {
+                        $this->entityManager->persist($death);
+                        $death->setSection($section);
+                    }
                 }
 
                 foreach ($originalDeaths as $death) {

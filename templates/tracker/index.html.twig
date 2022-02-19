@@ -3,7 +3,9 @@
 <div class="create-tracker-wrapper">
     <h3>Create new tracker</h3>
 
-    {% include '@SimplyStreamSoulsDeath/tracker/_tracker-form.html.twig' with {form} only %}
+    <div class="border p-3 mb-3">
+        {% include '@SimplyStreamSoulsDeath/tracker/_tracker-form.html.twig' with {form} only %}
+    </div>
 </div>
 
 {% for tracker in trackers %}
