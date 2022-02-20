@@ -8,28 +8,41 @@
 
         <div class="container">
             <div class="row border-bottom border-2 border-dark">
-                <div class="col-11">
+                <div class="col-8">
                     <b>Cause</b>
                 </div>
 
-                <div class="col-1">
+                <div class="col-2 text-end">
                     <b>Deaths</b>
+                </div>
+
+                <div class="col-2 text-end">
+                    <b>Percent</b>
                 </div>
             </div>
 
+            {% set sectionDeaths = 0 %}
             {% for death in section.deaths %}
                 <div class="row p-1 {{ death.successful ? 'bg-success' : '' }}"
                      style="--bs-bg-opacity: .5"
                      id="{{ death.id }}">
-                    <div class="col-11"
+                    <div class="col-8"
                          data-bs-toggle="tooltip"
                          data-bs-placement="top"
                          title="{{ death.alias }}">
                         {{ death.cause }}
                     </div>
-                    <div class="col-1">{{ death.deaths }}</div>
+                    <div class="col-2 text-end">{{ death.deaths }}</div>
+                    <div class="col-2 text-end">{{ (death.deaths / total * 100) |number_format(2, ',', '.') }}</div>
+                    {% set sectionDeaths = sectionDeaths + death.deaths %}
                 </div>
             {% endfor %}
+
+            <div class="row border-top border-1 border-dark">
+                <div class="col-8 fw-bold">Total</div>
+                <div class="col-2 text-end">{{ sectionDeaths }}</div>
+                <div class="col-2 text-end">{{ (sectionDeaths / total * 100) |number_format(2, ',', '.') }}</div>
+            </div>
         </div>
     </div>
 {% endfor %}

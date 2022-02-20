@@ -9,7 +9,12 @@
 
         <field name="title" length="255"/>
 
-        <one-to-many field="deaths" target-entity="SimplyStream\SoulsDeathBundle\Entity\Counter" mapped-by="section"/>
+        <one-to-many field="deaths" target-entity="SimplyStream\SoulsDeathBundle\Entity\Counter" mapped-by="section">
+            <cascade>
+                <cascade-persist/>
+                <cascade-remove/>
+            </cascade>
+        </one-to-many>
 
         <many-to-one field="tracker" inversed-by="sections"/>
     </entity>

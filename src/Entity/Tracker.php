@@ -66,12 +66,12 @@ class Tracker
         return $this;
     }
 
-    public function getOwner(): ?User
+    public function getOwner(): ?UserInterface
     {
         return $this->owner;
     }
 
-    public function setOwner(?User $owner): self
+    public function setOwner(?UserInterface $owner): self
     {
         $this->owner = $owner;
 

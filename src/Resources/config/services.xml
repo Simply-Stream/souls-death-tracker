@@ -39,9 +39,11 @@
             <tag name="kernel.event_subscriber"/>
         </service>
 
-        <service class="SimplyStream\SoulsDeathBundle\Messenger\TwitchChatMessageSerializer"
-                 id="simplystream.souls_death.messenger.serializer.chatmessage" public="true">
-            <argument id="Symfony\Component\Serializer\SerializerInterface" type="service"/>
+        <service id="simplystream.souls_death.services.tracker" lazy="true"
+                 class="SimplyStream\SoulsDeathBundle\Service\TrackerService">
+            <argument type="service" id="soulsdeath.repository.tracker"/>
+            <argument type="service" id="soulsdeath.repository.counter"/>
+            <argument type="service" id="doctrine.orm.entity_manager"/>
         </service>
     </services>
 </container>
