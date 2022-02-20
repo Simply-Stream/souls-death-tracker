@@ -7,7 +7,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use SimplyStream\SoulsDeathBundle\Entity\Section;
 use SimplyStream\SoulsDeathBundle\Entity\Tracker;
 use SimplyStream\SoulsDeathBundle\Form\TrackerType;
-use SimplyStream\SoulsDeathBundle\Repository\TrackerRepository;
+use SimplyStream\SoulsDeathBundle\Service\TrackerService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -15,18 +15,20 @@ use Symfony\Component\HttpFoundation\Response;
 
 class TrackerController extends AbstractController
 {
-    protected TrackerRepository $trackerRepository;
     protected FormFactoryInterface $formFactory;
+
     protected EntityManagerInterface $entityManager;
 
+    protected TrackerService $trackerService;
+
     public function __construct(
-        TrackerRepository $trackerRepository,
         FormFactoryInterface $formFactory,
-        EntityManagerInterface $entityManager
+        EntityManagerInterface $entityManager,
+        TrackerService $trackerService
     ) {
-        $this->trackerRepository = $trackerRepository;
         $this->formFactory = $formFactory;
         $this->entityManager = $entityManager;
+        $this->trackerService = $trackerService;
     }
 
     public function index(): Response
@@ -34,7 +36,7 @@ class TrackerController extends AbstractController
         $form = $this->formFactory->create(TrackerType::class);
 
         return $this->render('@SimplyStreamSoulsDeath/tracker/index.html.twig', [
-            'trackers' => $this->trackerRepository->findBy(['owner' => $this->getUser()]),
+            'trackers' => $this->trackerService->getByOwner($this->getUser()),
             'form' => $form->createView(),
         ]);
     }
@@ -70,40 +72,30 @@ class TrackerController extends AbstractController
 
     public function getTracker(string $id): Response
     {
-        $tracker = $this->trackerRepository->find($id);
-        $total = 0;
+        $tracker = $this->trackerService->get($id);
 
-        if ($tracker) {
-            foreach ($tracker->getSections() as $section) {
-                $total += $section->getTotalDeaths();
-            }
+        if (! $tracker) {
+            throw $this->createNotFoundException("Tracker with ID '${id}' not found");
         }
 
         return $this->render('@SimplyStreamSoulsDeath/tracker/get.html.twig', [
             'tracker' => $tracker,
-            'total' => $total,
+            'total' => $this->trackerService->getTotal($tracker),
         ]);
     }
 
     public function getTrackerOverlayTotal(string $id): Response
     {
-        $tracker = $this->trackerRepository->find($id);
-        $total = 0;
+        $tracker = $this->trackerService->get($id);
 
         if (! $tracker) {
-            $this->createNotFoundException();
-        }
-
-        foreach ($tracker->getSections() as $section) {
-            foreach ($section->getDeaths() as $death) {
-                $total += $death->getDeaths();
-            }
+            throw $this->createNotFoundException();
         }
 
         return $this->render(
             '@SimplyStreamSoulsDeath/tracker/total.html.twig', [
-            'total' => $total,
             'trackerId' => $tracker->getId(),
+            'total' => $this->trackerService->getTotal($tracker),
         ]);
     }
 
@@ -111,7 +103,7 @@ class TrackerController extends AbstractController
     //        But for now it's ok
     public function editTracker(string $id, Request $request): Response
     {
-        if (null === $tracker = $this->trackerRepository->find($id)) {
+        if (null === $tracker = $this->trackerService->get($id)) {
             throw $this->createNotFoundException('No tracker found for id ' . $id);
         }
 
