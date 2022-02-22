@@ -6,7 +6,7 @@ use Symfony\Contracts\EventDispatcher\Event;
 
 class CommandExecutionEvent extends Event
 {
-    public const NAME = 'simply-stream.commands';
+    public const NAME = 'simply-stream.commands.execute';
 
     protected string $command;
 

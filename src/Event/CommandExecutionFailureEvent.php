@@ -8,6 +8,8 @@ use Symfony\Contracts\EventDispatcher\Event;
 
 class CommandExecutionFailureEvent extends Event
 {
+    public const NAME = 'simply-stream.commands.execute.failure';
+
     protected Counter $counter;
 
     protected UserInterface $user;

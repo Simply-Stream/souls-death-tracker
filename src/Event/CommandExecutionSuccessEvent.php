@@ -8,6 +8,8 @@ use Symfony\Contracts\EventDispatcher\Event;
 
 class CommandExecutionSuccessEvent extends Event
 {
+    public const NAME = 'simply-stream.commands.execute.success';
+
     protected Counter $counter;
 
     protected UserInterface $user;
