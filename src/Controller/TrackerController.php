@@ -64,10 +64,10 @@ class TrackerController extends AbstractController
             $this->entityManager->persist($data);
             $this->entityManager->flush();
 
-            return $this->redirect('/tracker/' . $data->getId());
+            return $this->redirectToRoute('simplystream.get_tracker', ['id' => $data->getId()]);
         }
 
-        return $this->redirect('/tracker', Response::HTTP_BAD_REQUEST);
+        return $this->redirectToRoute('simplystream.get_trackers', [], Response::HTTP_BAD_REQUEST);
     }
 
     public function getTracker(string $id): Response
@@ -161,7 +161,7 @@ class TrackerController extends AbstractController
             $this->entityManager->persist($newTracker);
             $this->entityManager->flush();
 
-            return $this->redirect('/tracker/' . $newTracker->getId());
+            return $this->redirectToRoute('simplystream.get_tracker', ['id' => $newTracker->getId()]);
         }
 
         return $this->render('@SimplyStreamSoulsDeath/tracker/edit.html.twig', [

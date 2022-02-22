@@ -45,7 +45,12 @@ class TrackerService
      */
     public function getTotal(Tracker $tracker): int
     {
-        return $this->counterRepository->sumTotalByTracker($tracker);
+        try {
+            return $this->counterRepository->sumTotalByTracker($tracker);
+        } catch (\TypeError $exception) {
+            // @TODO: When there's no counters, this exception will be thrown. Check for improvements
+            return 0;
+        }
     }
 
     /**

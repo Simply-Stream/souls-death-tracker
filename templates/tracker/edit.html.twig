@@ -1,1 +1,5 @@
+{% if form.vars.value.id is defined %}
+    <a href="{{ path('simplystream.get_tracker', {id: form.vars.value.id}) }}">Back</a>
+{% endif %}
+
 {% include '@SimplyStreamSoulsDeath/tracker/_tracker-form.html.twig' with {form} only %}

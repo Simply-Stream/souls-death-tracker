@@ -1,6 +1,7 @@
 <h3>{{ tracker.name }}</h3>
 <a href="{{ path('simplystream.edit_tracker', {id: tracker.id}) }}">Edit</a>
-<a href="{{ path('simplystream.get_tracker_overlay_total', {id: tracker.id}) }}">Total</a>
+<a href="{{ path('simplystream.get_tracker_overlay_total', {id: tracker.id}) }}">Total overlay</a>
+<a href="{{ path('simplystream.get_trackers') }}">Back</a>
 
 {% for section in tracker.sections %}
     <div class="my-4">
@@ -21,28 +22,30 @@
                 </div>
             </div>
 
-            {% set sectionDeaths = 0 %}
-            {% for death in section.deaths %}
-                <div class="row p-1 {{ death.successful ? 'bg-success' : '' }}"
-                     style="--bs-bg-opacity: .5"
-                     id="{{ death.id }}">
-                    <div class="col-8"
-                         data-bs-toggle="tooltip"
-                         data-bs-placement="top"
-                         title="{{ death.alias }}">
-                        {{ death.cause }}
+            {% if section.deaths |length > 0 %}
+                {% set sectionDeaths = 0 %}
+                {% for death in section.deaths %}
+                    <div class="row p-1 {{ death.successful ? 'bg-success' : '' }}"
+                         style="--bs-bg-opacity: .5"
+                         id="{{ death.id }}">
+                        <div class="col-8"
+                             data-bs-toggle="tooltip"
+                             data-bs-placement="top"
+                             title="{{ death.alias }}">
+                            {{ death.cause }}
+                        </div>
+                        <div class="col-2 text-end">{{ death.deaths }}</div>
+                        <div class="col-2 text-end">{{ total > 0 ? (death.deaths / total * 100) : 0 |number_format(2, ',', '.') }}</div>
+                        {% set sectionDeaths = sectionDeaths + death.deaths %}
                     </div>
-                    <div class="col-2 text-end">{{ death.deaths }}</div>
-                    <div class="col-2 text-end">{{ (death.deaths / total * 100) |number_format(2, ',', '.') }}</div>
-                    {% set sectionDeaths = sectionDeaths + death.deaths %}
-                </div>
-            {% endfor %}
+                {% endfor %}
 
-            <div class="row border-top border-1 border-dark">
-                <div class="col-8 fw-bold">Total</div>
-                <div class="col-2 text-end">{{ sectionDeaths }}</div>
-                <div class="col-2 text-end">{{ (sectionDeaths / total * 100) |number_format(2, ',', '.') }}</div>
-            </div>
+                <div class="row border-top border-1 border-dark">
+                    <div class="col-8 fw-bold">Total</div>
+                    <div class="col-2 text-end">{{ sectionDeaths }}</div>
+                    <div class="col-2 text-end">{{ total > 0 ? (sectionDeaths / total * 100) : 0 |number_format(2, ',', '.') }}</div>
+                </div>
+            {% endif %}
         </div>
     </div>
 {% endfor %}
