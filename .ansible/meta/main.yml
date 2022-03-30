@@ -1,4 +1,0 @@
-dependencies:
-    - community.postgresql.postgresql_db
-    - hetzner.hcloud.hcloud_server
-    - ansible.posix.synchronize

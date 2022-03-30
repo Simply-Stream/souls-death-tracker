@@ -1,0 +1,16 @@
+{% extends '@SimplyStreamSoulsDeath/tracker/overlay/layout.html.twig' %}
+
+{% block title %}{{ tracker.name |capitalize }}{% endblock %}
+
+{% block body %}
+    <div>
+        {% for section in tracker.sections %}
+            <div><b>{{ section.title }}</b></div>
+            {% for counter in section.deaths %}
+                <div>{{ counter.cause }}</div>
+                <div>{{ counter.deaths }}</div>
+                <div>{{ counter.successful ? 'Dead': 'Alive' }}</div>
+            {% endfor %}
+        {% endfor %}
+    </div>
+{% endblock %}

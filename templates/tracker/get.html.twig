@@ -4,7 +4,7 @@
 <a href="{{ path('simplystream.get_trackers') }}">Back</a>
 
 {% for section in tracker.sections %}
-    <div class="my-4">
+    <div data-section-order="{{ loop.index - 1 }}" class="my-4">
         <h5>{{ section.title }}</h5>
 
         <div class="container">
@@ -35,7 +35,7 @@
                             {{ death.cause }}
                         </div>
                         <div class="col-2 text-end">{{ death.deaths }}</div>
-                        <div class="col-2 text-end">{{ total > 0 ? (death.deaths / total * 100) : 0 |number_format(2, ',', '.') }}</div>
+                        <div class="col-2 text-end">{{ (total > 0 ? (death.deaths / total * 100) : 0) |number_format(2, ',', '.') }}</div>
                         {% set sectionDeaths = sectionDeaths + death.deaths %}
                     </div>
                 {% endfor %}
@@ -43,7 +43,7 @@
                 <div class="row border-top border-1 border-dark">
                     <div class="col-8 fw-bold">Total</div>
                     <div class="col-2 text-end">{{ sectionDeaths }}</div>
-                    <div class="col-2 text-end">{{ total > 0 ? (sectionDeaths / total * 100) : 0 |number_format(2, ',', '.') }}</div>
+                    <div class="col-2 text-end">{{ (total > 0 ? (sectionDeaths / total * 100) : 0) |number_format(2, ',', '.') }}</div>
                 </div>
             {% endif %}
         </div>

@@ -8,15 +8,38 @@
     </div>
 </div>
 
-{% for tracker in trackers %}
-    <div class="card" style="width: 18rem;">
-        <div class="card-body">
-            <h5 class="card-title">{{ tracker.name }}</h5>
+<div class="d-flex flex-wrap tracker-list">
+    {% for tracker in trackers %}
+        <div class="card mb-3 me-3" style="width: 18rem;">
+            <div class="card-body">
+                <h5 class="card-title">{{ tracker.name }}</h5>
 
-            <a href="{{ path('simplystream.get_tracker', {id: tracker.id}) }}" class="card-link">Show</a>
-            <a href="{{ path('simplystream.get_tracker_overlay_total', {id: tracker.id}) }}" class="card-link">
-                Total Deaths Overlay
-            </a>
+                <a href="{{ path('simplystream.get_tracker', {id: tracker.id}) }}" class="card-link">Show</a>
+                <button type="button" class="btn dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown"
+                        aria-expanded="false">
+                    <span class="visually-hidden">Toggle Dropdown</span>
+                </button>
+                <ul class="dropdown-menu">
+                    <li>
+                        <a href="{{ path('simplystream.get_tracker', {id: tracker.id}) }}"
+                           class="dropdown-item">
+                            Edit
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ path('simplystream.get_tracker_overlay_list', {id: tracker.id}) }}"
+                           class="dropdown-item">
+                            Overlay
+                        </a>
+                    </li>
+                    <li>
+                        <a class="dropdown-item"
+                           href="{{ path('simplystream.get_tracker_overlay_total', {id: tracker.id}) }}">
+                            Total Deaths Overlay
+                        </a>
+                    </li>
+                </ul>
+            </div>
         </div>
-    </div>
-{% endfor %}
+    {% endfor %}
+</div>

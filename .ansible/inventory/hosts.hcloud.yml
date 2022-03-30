@@ -1,5 +1,0 @@
-plugin: hcloud
-token: ""
-groups:
-    webserver: name.startswith('webserver')
-    database: name.startswith('database')

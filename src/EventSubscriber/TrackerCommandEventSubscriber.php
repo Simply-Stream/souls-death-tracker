@@ -6,6 +6,8 @@ use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepositoryInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use SimplyStream\SoulsDeathBundle\Entity\Counter;
 use SimplyStream\SoulsDeathBundle\Entity\Section;
+use SimplyStream\SoulsDeathBundle\Event\AddCauseCommandSuccess;
+use SimplyStream\SoulsDeathBundle\Event\AddSectionCommandSuccess;
 use SimplyStream\SoulsDeathBundle\Event\CommandExecutionEvent;
 use SimplyStream\SoulsDeathBundle\Event\CommandExecutionSuccessEvent;
 use SimplyStream\SoulsDeathBundle\Event\SendChatmessageEvent;
@@ -61,12 +63,12 @@ class TrackerCommandEventSubscriber implements EventSubscriberInterface
             }
 
             if (count($command) > 1) {
-                switch ($command[1]) {
+                switch (strtolower($command[1])) {
                     case '?':
                     case 'help':
                         $this->sendHelpChatMessage($command, $channel);
                         break;
-                    case 'addSection':
+                    case 'addsection':
                         // Add a new section to tracker
                         $sectionName = $command[2];
                         $newSection = (new Section())->setTitle($sectionName);
@@ -80,9 +82,16 @@ class TrackerCommandEventSubscriber implements EventSubscriberInterface
                         $event = new SendChatmessageEvent($channel, $message);
                         $this->eventDispatcher->dispatch($event);
 
+                        $event = new AddSectionCommandSuccess($newSection, $channel);
+                        $this->eventDispatcher->dispatch($event);
+
                         break;
-                    case 'addCause':
+                    case 'addcause':
                         // Add new cause to section. Don't use IDs for section, use number of order (1 = maingame, 2 = first dlc, etc)
+                        if (count($command) < 4 || ! is_numeric($command[2])) {
+                            return;
+                        }
+
                         $sectionOrderNumber = $command[2];
                         $causeName = $command[3];
                         $causeAlias = strtolower(str_replace(' ', '-', $causeName));
@@ -119,6 +128,9 @@ class TrackerCommandEventSubscriber implements EventSubscriberInterface
 
                         $message = "Death cause '${causeName}' with alias '${causeAlias}' and ${deaths} has been added to '!${command[0]}'";
                         $event = new SendChatmessageEvent($channel, $message);
+                        $this->eventDispatcher->dispatch($event);
+
+                        $event = new AddCauseCommandSuccess($death, $channel);
                         $this->eventDispatcher->dispatch($event);
 
                         break;
@@ -168,13 +180,6 @@ class TrackerCommandEventSubscriber implements EventSubscriberInterface
         }
     }
 
-    public static function getSubscribedEvents()
-    {
-        return [
-            CommandExecutionEvent::class => 'onCommandExecutionEvent',
-        ];
-    }
-
     protected function sendHelpChatMessage(array $command, string $channel): void
     {
         $commandName = $command[0];
@@ -183,7 +188,7 @@ class TrackerCommandEventSubscriber implements EventSubscriberInterface
             // 0 = command, 1 = help|?, 2 = command
             $message = match ($command[2]) {
                 'addSection' => "Usage: !${commandName} addSection <sectionName>",
-                'addCounter' => "Usage: !${commandName} addCounter <sectionOrder> <deathCauseName> [<deathCauseAlias> and/or <deathCauseValue>].",
+                'addCause' => "Usage: !${commandName} addCause <sectionOrder> <deathCauseName> [<deathCauseAlias> and/or <deathCauseValue>].",
                 'search' => "Usage: !${commandName} search <deathCauseName>. Fuzzy search for alias of death cause.",
                 'list' => "Usage: !${commandName} list. Whispers the list of all aliases and names of a tracker.",
                 default => null
@@ -196,5 +201,12 @@ class TrackerCommandEventSubscriber implements EventSubscriberInterface
             $event = new SendChatmessageEvent($channel, $message);
             $this->eventDispatcher->dispatch($event);
         }
+    }
+
+    public static function getSubscribedEvents()
+    {
+        return [
+            CommandExecutionEvent::class => 'onCommandExecutionEvent',
+        ];
     }
 }

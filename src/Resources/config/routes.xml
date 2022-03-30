@@ -14,6 +14,9 @@
            controller="simplystream.tracker_controller::getTrackerOverlayTotal"
            path="/{id}/overlay/total" methods="GET"/>
 
+    <route id="simplystream.get_tracker_overlay_list" controller="simplystream.tracker_controller::getTrackerOverlay"
+           path="/{id}/overlay" methods="GET"/>
+
     <route id="simplystream.get_trackers" controller="simplystream.tracker_controller::index" path="/" methods="GET"/>
 
     <route id="simplystream.save_tracker" controller="simplystream.tracker_controller::save" path="/" methods="POST"/>
