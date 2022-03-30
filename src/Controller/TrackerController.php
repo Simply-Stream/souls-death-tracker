@@ -84,7 +84,7 @@ class TrackerController extends AbstractController
         ]);
     }
 
-    public function getTrackerOverlayTotal(string $id): Response
+    public function getTrackerOverlayTotal(string $id, Request $request): Response
     {
         $tracker = $this->trackerService->get($id);
 
@@ -93,9 +93,25 @@ class TrackerController extends AbstractController
         }
 
         return $this->render(
-            '@SimplyStreamSoulsDeath/tracker/total.html.twig', [
+            '@SimplyStreamSoulsDeath/tracker/overlay/total.html.twig', [
             'trackerId' => $tracker->getId(),
             'total' => $this->trackerService->getTotal($tracker),
+            'twitchId' => $request->query->get('twitchId'),
+        ]);
+    }
+
+    public function getTrackerOverlay(string $id, Request $request): Response
+    {
+        $tracker = $this->trackerService->get($id);
+
+        if (! $tracker) {
+            throw $this->createNotFoundException();
+        }
+
+        return $this->render('@SimplyStreamSoulsDeath/tracker/overlay/list.html.twig', [
+            'tracker' => $tracker,
+            'total' => $this->trackerService->getTotal($tracker),
+            'twitchId' => $request->query->get('twitchId'),
         ]);
     }
 

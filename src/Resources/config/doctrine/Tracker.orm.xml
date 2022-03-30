@@ -11,12 +11,14 @@
 
         <field name="commandName" length="255"/>
 
+        <field name="publicToken" length="255" nullable="true"/>
+
         <many-to-one field="game"/>
 
         <many-to-one field="owner" inversed-by="trackers"
                      target-entity="SimplyStream\SoulsDeathBundle\Entity\UserInterface"/>
 
-         <one-to-many field="sections" target-entity="SimplyStream\SoulsDeathBundle\Entity\Section" mapped-by="tracker">
+        <one-to-many field="sections" target-entity="SimplyStream\SoulsDeathBundle\Entity\Section" mapped-by="tracker">
             <cascade>
                 <cascade-persist/>
                 <cascade-remove/>

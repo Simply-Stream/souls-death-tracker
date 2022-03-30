@@ -20,6 +20,8 @@ class Tracker
 
     protected Collection $sections;
 
+    protected string $publicToken;
+
     public function __construct()
     {
         $this->sections = new ArrayCollection();
@@ -102,6 +104,18 @@ class Tracker
         if ($this->sections->removeElement($section) && $section->getTracker() === $this) {
             $section->setTracker(null);
         }
+
+        return $this;
+    }
+
+    public function getPublicToken(): string
+    {
+        return $this->publicToken;
+    }
+
+    public function setPublicToken(string $publicToken): Tracker
+    {
+        $this->publicToken = $publicToken;
 
         return $this;
     }
