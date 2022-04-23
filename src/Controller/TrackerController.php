@@ -16,6 +16,8 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class TrackerController extends AbstractController
 {
+    public const PUBLIC_LINK_TOKEN = 'token';
+
     protected FormFactoryInterface $formFactory;
 
     protected EntityManagerInterface $entityManager;
@@ -71,7 +73,7 @@ class TrackerController extends AbstractController
         return $this->redirectToRoute('simplystream.get_trackers', [], Response::HTTP_BAD_REQUEST);
     }
 
-    public function getTracker(string $id): Response
+    public function getTracker(Request $request, string $id): Response
     {
         $tracker = $this->trackerService->get($id);
 
@@ -79,7 +81,21 @@ class TrackerController extends AbstractController
             throw $this->createNotFoundException("Tracker with ID '${id}' not found");
         }
 
+        // @TODO: Implement a voter for this, we need some more routes with this function
+        if (! $this->isGranted('IS_AUTHENTICATED_FULLY')) {
+            $token = $request->query->get(self::PUBLIC_LINK_TOKEN);
+
+            if (! $token || $tracker->getPublicToken() !== $token) {
+                throw $this->createAccessDeniedException('You need a valid token to access this tracker!');
+            }
+
+            $user = $tracker->getOwner();
+        } else {
+            $user = $this->getUser();
+        }
+
         return $this->render('@SimplyStreamSoulsDeath/tracker/get.html.twig', [
+            'user' => $user,
             'tracker' => $tracker,
             'total' => $this->trackerService->getTotal($tracker),
         ]);
@@ -137,7 +153,7 @@ class TrackerController extends AbstractController
                 'simplystream.get_tracker',
                 [
                     'id' => $id,
-                    'token' => $tracker->getPublicToken(),
+                    self::PUBLIC_LINK_TOKEN => $tracker->getPublicToken(),
                 ],
                 UrlGeneratorInterface::ABSOLUTE_URL
             ),
