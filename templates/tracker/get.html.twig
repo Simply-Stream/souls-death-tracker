@@ -1,10 +1,67 @@
 <h3>{{ tracker.name }}</h3>
 <div class="position-relative">
-    <a href="{{ path('simplystream.edit_tracker', {id: tracker.id}) }}">Edit</a>
-    <a href="{{ path('simplystream.get_tracker_overlay_total', {id: tracker.id}) }}">Total overlay</a>
-    <a href="{{ path('simplystream.get_trackers') }}">Back</a>
+    {% if app.user %}
+        <a href="{{ path('simplystream.edit_tracker', {id: tracker.id}) }}">Edit</a>
+        <a href="{{ path('simplystream.get_tracker_overlay_total', {id: tracker.id}) }}">Total overlay</a>
+        <a href="{{ path('simplystream.get_trackers') }}">Back</a>
 
-    <button class="btn btn-primary position-absolute end-0">Share</button>
+        <button class="btn btn-primary position-absolute end-0" id="publicLinkButton" data-bs-toggle="modal"
+                data-bs-target="#publicLinkModal">
+            Share
+        </button>
+
+        <div class="modal fade" id="publicLinkModal" tabindex="-1" aria-labelledby="publicLinkModalLabel"
+             aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Public Link</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="input-group mb-3">
+                            <input type="text" class="form-control" id="publicLinkInput"
+                                   placeholder="Waiting for public link ..."
+                                   aria-label="Public link">
+                            <button class="btn btn-outline-secondary fa fa-copy" type="button" id="copyButton"
+                                    disabled></button>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            // Ignore this, or better, override it!
+            const copyButton = document.getElementById('copyButton');
+            const publicLinkInput = document.getElementById('publicLinkInput');
+
+            function copyPublicLink() {
+                const copyText = publicLinkInput.value;
+                navigator.clipboard.writeText(copyText);
+            }
+
+            async function getPublicUrl() {
+                const publicUrl = await fetch("{{ url('simplystream.get_tracker_public_url', {id: tracker.id}) }}")
+                    .then(response => response.json())
+                    .then(json => json.publicUrl);
+
+                if (publicUrl) {
+                    copyButton.disabled = false;
+                    publicLinkInput.value = publicUrl;
+                } else {
+                    publicLinkInput.value = 'Error!';
+                }
+            }
+
+            const publicLinkButton = document.getElementById('publicLinkButton');
+            publicLinkButton.onclick = getPublicUrl;
+            copyButton.onclick = copyPublicLink;
+        </script>
+    {% endif %}
 </div>
 
 {% for section in tracker.sections %}
