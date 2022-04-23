@@ -20,7 +20,7 @@ class Tracker
 
     protected Collection $sections;
 
-    protected string $publicToken;
+    protected ?string $publicToken;
 
     public function __construct()
     {
@@ -108,7 +108,7 @@ class Tracker
         return $this;
     }
 
-    public function getPublicToken(): string
+    public function getPublicToken(): ?string
     {
         return $this->publicToken;
     }

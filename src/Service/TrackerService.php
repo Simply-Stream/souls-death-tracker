@@ -16,14 +16,18 @@ class TrackerService
 
     protected EntityManagerInterface $entityManager;
 
+    protected TokenGenerator $tokenGenerator;
+
     public function __construct(
         TrackerRepository $trackerRepository,
         CounterRepository $counterRepository,
-        EntityManagerInterface $entityManager
+        EntityManagerInterface $entityManager,
+        TokenGenerator $tokenGenerator
     ) {
         $this->trackerRepository = $trackerRepository;
         $this->counterRepository = $counterRepository;
         $this->entityManager = $entityManager;
+        $this->tokenGenerator = $tokenGenerator;
     }
 
     public function get(string $id): ?Tracker
@@ -70,5 +74,14 @@ class TrackerService
         }
 
         return $tracker;
+    }
+
+    /**
+     * @return string
+     * @throws \Exception
+     */
+    public function generatePublicToken(): string
+    {
+        return $this->tokenGenerator->generate();
     }
 }

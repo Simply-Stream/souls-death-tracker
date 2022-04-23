@@ -12,6 +12,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class TrackerController extends AbstractController
 {
@@ -112,6 +113,34 @@ class TrackerController extends AbstractController
             'tracker' => $tracker,
             'total' => $this->trackerService->getTotal($tracker),
             'twitchId' => $request->query->get('twitchId'),
+        ]);
+    }
+
+    /**
+     * @throws \Exception
+     */
+    public function getSharableUrl(string $id): Response
+    {
+        $tracker = $this->trackerService->get($id);
+
+        if (! $tracker) {
+            throw $this->createNotFoundException("Tracker with ID '${id}' not found");
+        }
+
+        if (! $tracker->getPublicToken()) {
+            $tracker->setPublicToken($this->trackerService->generatePublicToken());
+            $this->trackerService->save($tracker, true);
+        }
+
+        return $this->json([
+            'publicUrl' => $this->generateUrl(
+                'simplystream.get_tracker',
+                [
+                    'id' => $id,
+                    'token' => $tracker->getPublicToken(),
+                ],
+                UrlGeneratorInterface::ABSOLUTE_URL
+            ),
         ]);
     }
 
