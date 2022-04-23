@@ -20,4 +20,7 @@
     <route id="simplystream.get_trackers" controller="simplystream.tracker_controller::index" path="/" methods="GET"/>
 
     <route id="simplystream.save_tracker" controller="simplystream.tracker_controller::save" path="/" methods="POST"/>
+
+    <route id="simplystream.get_tracker_public_url" controller="simplystream.tracker_controller::getSharableUrl"
+           path="/{id}/public" methods="GET"/>
 </routes>

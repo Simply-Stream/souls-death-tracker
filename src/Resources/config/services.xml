@@ -39,11 +39,16 @@
             <tag name="kernel.event_subscriber"/>
         </service>
 
+        <service id="simplystream.souls_death.services.token" lazy="true"
+                 class="SimplyStream\SoulsDeathBundle\Service\TokenGenerator">
+        </service>
+
         <service id="simplystream.souls_death.services.tracker" lazy="true"
                  class="SimplyStream\SoulsDeathBundle\Service\TrackerService">
             <argument type="service" id="soulsdeath.repository.tracker"/>
             <argument type="service" id="soulsdeath.repository.counter"/>
             <argument type="service" id="doctrine.orm.entity_manager"/>
+            <argument type="service" id="simplystream.souls_death.services.token"/>
         </service>
     </services>
 </container>

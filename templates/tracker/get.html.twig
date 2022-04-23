@@ -1,7 +1,11 @@
 <h3>{{ tracker.name }}</h3>
-<a href="{{ path('simplystream.edit_tracker', {id: tracker.id}) }}">Edit</a>
-<a href="{{ path('simplystream.get_tracker_overlay_total', {id: tracker.id}) }}">Total overlay</a>
-<a href="{{ path('simplystream.get_trackers') }}">Back</a>
+<div class="position-relative">
+    <a href="{{ path('simplystream.edit_tracker', {id: tracker.id}) }}">Edit</a>
+    <a href="{{ path('simplystream.get_tracker_overlay_total', {id: tracker.id}) }}">Total overlay</a>
+    <a href="{{ path('simplystream.get_trackers') }}">Back</a>
+
+    <button class="btn btn-primary position-absolute end-0">Share</button>
+</div>
 
 {% for section in tracker.sections %}
     <div data-section-order="{{ loop.index - 1 }}" class="my-4">
