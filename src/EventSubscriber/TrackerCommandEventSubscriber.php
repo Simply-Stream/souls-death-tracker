@@ -46,16 +46,16 @@ class TrackerCommandEventSubscriber implements EventSubscriberInterface
      */
     public function onCommandExecutionEvent(CommandExecutionEvent $event)
     {
-        $channel = $event->getChannel();
-        $user = $this->userRepository->findOneBy(['username' => $channel]);
-        $tracker = $this->trackerRepository->findOneBy(['commandName' => $event->getCommand(), 'owner' => $user]);
         $chatmessage = $event->getChatMessage();
+        $user = $this->userRepository->findOneBy(['twitch_id' => $chatmessage['RoomId']]);
+        $tracker = $this->trackerRepository->findOneBy(['commandName' => $event->getCommand(), 'owner' => $user]);
 
         if ($tracker && $user &&
             (
                 $user->getDisplayName() === $chatmessage['DisplayName'] || $chatmessage['IsMod'] || $chatmessage['isVip']
             )
         ) {
+            $channel = $event->getChannel();
             $command = str_getcsv(substr($event->getChatMessage()['Message'], 1), " ");
 
             if (count($command) === 1) {
