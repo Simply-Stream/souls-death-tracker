@@ -41,22 +41,22 @@ class TrackerCommandEventSubscriber implements EventSubscriberInterface
     /**
      * @throws \Doctrine\ORM\NonUniqueResultException
      * @throws \JsonException
+     *
+     * @TODO: Implement a DTO
      */
     public function onCommandExecutionEvent(CommandExecutionEvent $event)
     {
         $channel = $event->getChannel();
         $user = $this->userRepository->findOneBy(['username' => $channel]);
         $tracker = $this->trackerRepository->findOneBy(['commandName' => $event->getCommand(), 'owner' => $user]);
-        $userstate = $event->getChatMessage()['userState'];
+        $chatmessage = $event->getChatMessage();
 
         if ($tracker && $user &&
             (
-                $user->getDisplayName() === $userstate['display-name'] ||
-                $userstate['mod'] ||
-                in_array('vip/1', $userstate['badges'], true)
+                $user->getDisplayName() === $chatmessage['DisplayName'] || $chatmessage['IsMod'] || $chatmessage['isVip']
             )
         ) {
-            $command = str_getcsv(substr($event->getChatMessage()['trailing'], 2), " ");
+            $command = str_getcsv(substr($event->getChatMessage()['Message'], 1), " ");
 
             if (count($command) === 1) {
                 return;
