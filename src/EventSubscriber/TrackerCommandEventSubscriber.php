@@ -50,7 +50,7 @@ class TrackerCommandEventSubscriber implements EventSubscriberInterface
         $user = $this->userRepository->findOneBy(['twitchId' => $chatmessage['RoomId']]);
         $tracker = $this->trackerRepository->findOneBy(['commandName' => $event->getCommand(), 'owner' => $user]);
 
-        if ($tracker && $user && ($chatmessage['IsBroadcaster'] || $chatmessage['IsMod'] || $chatmessage['isVip'])) {
+        if ($tracker && $user && ($chatmessage['IsBroadcaster'] || $chatmessage['IsModerator'] || $chatmessage['IsVip'])) {
             $channel = $event->getChannel();
             $command = str_getcsv(substr($event->getChatMessage()['Message'], 1), " ");
 
