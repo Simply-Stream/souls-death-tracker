@@ -13,7 +13,7 @@
 
         <field name="publicToken" length="255" nullable="true"/>
 
-        <many-to-one field="game"/>
+        <many-to-one field="game" target-entity="SimplyStream\SoulsDeathBundle\Entity\Game"/>
 
         <many-to-one field="owner" inversed-by="trackers"
                      target-entity="SimplyStream\SoulsDeathBundle\Entity\UserInterface"/>
