@@ -10,13 +10,16 @@ class CommandExecutionEvent extends Event
 
     protected string $command;
 
+    protected array $parameters;
+
     protected string $channel;
 
     protected array $chatMessage;
 
-    public function __construct(string $command, string $channel, array $chatMessage)
+    public function __construct(string $command, array $parameters, string $channel, array $chatMessage)
     {
         $this->command = $command;
+        $this->parameters = $parameters;
         $this->channel = $channel;
         $this->chatMessage = $chatMessage;
     }
@@ -27,6 +30,14 @@ class CommandExecutionEvent extends Event
     public function getCommand(): string
     {
         return $this->command;
+    }
+
+    /**
+     * @return array
+     */
+    public function getParameters(): array
+    {
+        return $this->parameters;
     }
 
     /**
