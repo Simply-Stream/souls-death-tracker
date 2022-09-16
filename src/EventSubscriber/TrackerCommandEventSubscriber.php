@@ -4,6 +4,7 @@ namespace SimplyStream\SoulsDeathBundle\EventSubscriber;
 
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepositoryInterface;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\NonUniqueResultException;
 use SimplyStream\SoulsDeathBundle\Entity\Counter;
 use SimplyStream\SoulsDeathBundle\Entity\Section;
 use SimplyStream\SoulsDeathBundle\Event\AddCauseCommandSuccess;
@@ -18,12 +19,28 @@ use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 class TrackerCommandEventSubscriber implements EventSubscriberInterface
 {
+    /** @var ServiceEntityRepositoryInterface */
     protected ServiceEntityRepositoryInterface $userRepository;
+
+    /** @var TrackerRepository */
     protected TrackerRepository $trackerRepository;
+
+    /** @var CounterRepository */
     protected CounterRepository $counterRepository;
+
+    /** @var EntityManagerInterface */
     protected EntityManagerInterface $entityManager;
+
+    /** @var EventDispatcherInterface */
     protected EventDispatcherInterface $eventDispatcher;
 
+    /**
+     * @param ServiceEntityRepositoryInterface $userRepository
+     * @param TrackerRepository                $trackerRepository
+     * @param CounterRepository                $counterRepository
+     * @param EntityManagerInterface           $entityManager
+     * @param EventDispatcherInterface         $eventDispatcher
+     */
     public function __construct(
         ServiceEntityRepositoryInterface $userRepository,
         TrackerRepository $trackerRepository,
@@ -39,12 +56,11 @@ class TrackerCommandEventSubscriber implements EventSubscriberInterface
     }
 
     /**
-     * @throws \Doctrine\ORM\NonUniqueResultException
-     * @throws \JsonException
+     * @param CommandExecutionEvent $event
      *
-     * @TODO: Implement a DTO
+     * @throws NonUniqueResultException
      */
-    public function onCommandExecutionEvent(CommandExecutionEvent $event)
+    public function onCommandExecutionEvent(CommandExecutionEvent $event): void
     {
         $chatmessage = $event->getChatMessage();
         $user = $this->userRepository->findOneBy(['twitchId' => $chatmessage['RoomId']]);
@@ -75,11 +91,11 @@ class TrackerCommandEventSubscriber implements EventSubscriberInterface
                         $this->entityManager->flush();
 
                         $message = "Section '${sectionName}' has been added to '!${command[0]}'";
-                        $event = new SendChatmessageEvent($channel, $message);
-                        $this->eventDispatcher->dispatch($event);
+                        $dispatchableEvent = new SendChatmessageEvent($channel, $message);
+                        $this->eventDispatcher->dispatch($dispatchableEvent);
 
-                        $event = new AddSectionCommandSuccess($newSection, $channel);
-                        $this->eventDispatcher->dispatch($event);
+                        $dispatchableEvent = new AddSectionCommandSuccess($newSection, $channel);
+                        $this->eventDispatcher->dispatch($dispatchableEvent);
 
                         break;
                     case 'addcause':
@@ -123,11 +139,11 @@ class TrackerCommandEventSubscriber implements EventSubscriberInterface
                         $this->entityManager->flush();
 
                         $message = "Death cause '${causeName}' with alias '${causeAlias}' and ${deaths} has been added to '!${command[0]}'";
-                        $event = new SendChatmessageEvent($channel, $message);
-                        $this->eventDispatcher->dispatch($event);
+                        $dispatchableEvent = new SendChatmessageEvent($channel, $message);
+                        $this->eventDispatcher->dispatch($dispatchableEvent);
 
-                        $event = new AddCauseCommandSuccess($death, $channel);
-                        $this->eventDispatcher->dispatch($event);
+                        $dispatchableEvent = new AddCauseCommandSuccess($death, $channel);
+                        $this->eventDispatcher->dispatch($dispatchableEvent);
 
                         break;
                     case 'search':
@@ -169,13 +185,19 @@ class TrackerCommandEventSubscriber implements EventSubscriberInterface
                         $this->entityManager->persist($counter);
                         $this->entityManager->flush();
 
-                        $event = new CommandExecutionSuccessEvent($counter, $user, $channel);
-                        $this->eventDispatcher->dispatch($event);
+                        $dispatchableEvent = new CommandExecutionSuccessEvent($counter, $user, $channel);
+                        $this->eventDispatcher->dispatch($dispatchableEvent);
                 }
             }
         }
     }
 
+    /**
+     * @param array  $command
+     * @param string $channel
+     *
+     * @return void
+     */
     protected function sendHelpChatMessage(array $command, string $channel): void
     {
         $commandName = $command[0];
@@ -199,7 +221,10 @@ class TrackerCommandEventSubscriber implements EventSubscriberInterface
         }
     }
 
-    public static function getSubscribedEvents()
+    /**
+     * @return string[]
+     */
+    public static function getSubscribedEvents(): array
     {
         return [
             CommandExecutionEvent::class => 'onCommandExecutionEvent',

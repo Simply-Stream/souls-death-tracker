@@ -8,6 +8,9 @@ use Symfony\Component\HttpKernel\Bundle\Bundle;
 
 final class SimplyStreamSoulsDeathBundle extends Bundle
 {
+    /**
+     * @return ExtensionInterface|null
+     */
     public function getContainerExtension(): ?ExtensionInterface
     {
         if (null === $this->extension) {
@@ -17,6 +20,9 @@ final class SimplyStreamSoulsDeathBundle extends Bundle
         return $this->extension;
     }
 
+    /**
+     * @return string
+     */
     public function getPath(): string
     {
         return \dirname(__DIR__);

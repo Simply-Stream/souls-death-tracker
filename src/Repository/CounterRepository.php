@@ -3,6 +3,8 @@
 namespace SimplyStream\SoulsDeathBundle\Repository;
 
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\NonUniqueResultException;
+use Doctrine\ORM\NoResultException;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 use SimplyStream\SoulsDeathBundle\Entity\Counter;
@@ -16,11 +18,19 @@ use SimplyStream\SoulsDeathBundle\Entity\Tracker;
  */
 class CounterRepository extends ServiceEntityRepository
 {
+    /**
+     * @param ManagerRegistry $registry
+     */
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Counter::class);
     }
 
+    /**
+     * @param Tracker $tracker
+     *
+     * @return QueryBuilder
+     */
     protected function getCauses(Tracker $tracker): QueryBuilder
     {
         $qb = $this->createQueryBuilder('c');
@@ -33,7 +43,7 @@ class CounterRepository extends ServiceEntityRepository
     }
 
     /**
-     * @throws \Doctrine\ORM\NonUniqueResultException
+     * @throws NonUniqueResultException
      */
     public function findOneByAliasInTracker(string $alias, Tracker $tracker): ?Counter
     {
@@ -44,11 +54,23 @@ class CounterRepository extends ServiceEntityRepository
         return $qb->getQuery()->getOneOrNullResult();
     }
 
+    /**
+     * @param Tracker $tracker
+     *
+     * @return array
+     */
     public function findAllByTracker(Tracker $tracker): array
     {
         return $this->getCauses($tracker)->getQuery()->getResult();
     }
 
+    /**
+     * @param Tracker $tracker
+     *
+     * @return int
+     * @throws NoResultException
+     * @throws NonUniqueResultException
+     */
     public function sumTotalByTracker(Tracker $tracker): int
     {
         $qb = $this->getCauses($tracker)

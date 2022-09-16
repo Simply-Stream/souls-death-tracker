@@ -34,6 +34,9 @@ class TrackerController extends AbstractController
         $this->trackerService = $trackerService;
     }
 
+    /**
+     * @return Response
+     */
     public function index(): Response
     {
         $form = $this->formFactory->create(TrackerType::class);
@@ -44,6 +47,11 @@ class TrackerController extends AbstractController
         ]);
     }
 
+    /**
+     * @param Request $request
+     *
+     * @return Response
+     */
     public function save(Request $request): Response
     {
         $form = $this->formFactory->create(TrackerType::class, null, [
@@ -73,6 +81,12 @@ class TrackerController extends AbstractController
         return $this->redirectToRoute('simplystream.get_trackers', [], Response::HTTP_BAD_REQUEST);
     }
 
+    /**
+     * @param Request $request
+     * @param string  $id
+     *
+     * @return Response
+     */
     public function getTracker(Request $request, string $id): Response
     {
         $tracker = $this->trackerService->get($id);
@@ -101,6 +115,12 @@ class TrackerController extends AbstractController
         ]);
     }
 
+    /**
+     * @param string  $id
+     * @param Request $request
+     *
+     * @return Response
+     */
     public function getTrackerOverlayTotal(string $id, Request $request): Response
     {
         $tracker = $this->trackerService->get($id);
@@ -117,6 +137,12 @@ class TrackerController extends AbstractController
         ]);
     }
 
+    /**
+     * @param string  $id
+     * @param Request $request
+     *
+     * @return Response
+     */
     public function getTrackerOverlay(string $id, Request $request): Response
     {
         $tracker = $this->trackerService->get($id);
@@ -160,8 +186,14 @@ class TrackerController extends AbstractController
         ]);
     }
 
-    // @TODO: This is hella inefficient and needs to be re-done!
-    //        But for now it's ok
+    /**
+     * @TODO: This is hella inefficient and needs to be re-done!
+     *        But for now it's ok
+     * @param string  $id
+     * @param Request $request
+     *
+     * @return Response
+     */
     public function editTracker(string $id, Request $request): Response
     {
         if (null === $tracker = $this->trackerService->get($id)) {

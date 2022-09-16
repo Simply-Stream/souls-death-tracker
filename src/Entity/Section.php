@@ -8,12 +8,16 @@ use JetBrains\PhpStorm\Pure;
 
 class Section
 {
+    /** @var int|null  */
     protected ?int $id;
 
-    protected Collection $deaths;
+    /** @var ArrayCollection|Collection */
+    protected Collection|ArrayCollection $deaths;
 
+    /** @var Tracker|null  */
     protected ?Tracker $tracker;
 
+    /** @var string|null  */
     protected ?string $title;
 
     public function __construct()
@@ -21,6 +25,9 @@ class Section
         $this->deaths = new ArrayCollection();
     }
 
+    /**
+     * @return int|null
+     */
     public function getId(): ?int
     {
         return $this->id;
@@ -34,6 +41,11 @@ class Section
         return $this->deaths;
     }
 
+    /**
+     * @param Counter $death
+     *
+     * @return $this
+     */
     public function addDeath(Counter $death): self
     {
         if (! $this->deaths->contains($death)) {
@@ -44,6 +56,11 @@ class Section
         return $this;
     }
 
+    /**
+     * @param Counter $death
+     *
+     * @return $this
+     */
     public function removeDeath(Counter $death): self
     {
         if ($this->deaths->removeElement($death)) {
@@ -56,11 +73,19 @@ class Section
         return $this;
     }
 
+    /**
+     * @return Tracker|null
+     */
     public function getTracker(): ?Tracker
     {
         return $this->tracker;
     }
 
+    /**
+     * @param Tracker|null $tracker
+     *
+     * @return $this
+     */
     public function setTracker(?Tracker $tracker): self
     {
         $this->tracker = $tracker;
@@ -68,11 +93,19 @@ class Section
         return $this;
     }
 
+    /**
+     * @return string|null
+     */
     public function getTitle(): ?string
     {
         return $this->title;
     }
 
+    /**
+     * @param string $title
+     *
+     * @return $this
+     */
     public function setTitle(string $title): self
     {
         $this->title = $title;
@@ -80,6 +113,9 @@ class Section
         return $this;
     }
 
+    /**
+     * @return int
+     */
     #[Pure] public function getTotalDeaths(): int
     {
         $total = 0;
