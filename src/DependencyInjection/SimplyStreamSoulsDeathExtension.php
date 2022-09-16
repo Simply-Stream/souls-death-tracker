@@ -9,6 +9,9 @@ use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
 
 class SimplyStreamSoulsDeathExtension extends Extension
 {
+    /**
+     * {@inheritDoc}
+     */
     public function load(array $configs, ContainerBuilder $container)
     {
         $loader = new XmlFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config'));
@@ -21,6 +24,9 @@ class SimplyStreamSoulsDeathExtension extends Extension
         $this->configurePersistence($config['objects'], $container);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function configurePersistence(array $objects, ContainerBuilder $container): void
     {
         foreach ($objects as $object => $services) {
@@ -32,7 +38,10 @@ class SimplyStreamSoulsDeathExtension extends Extension
         }
     }
 
-    public function getAlias()
+    /**
+     * {@inheritDoc}
+     */
+    public function getAlias(): string
     {
         return 'simplystream_soulsdeath';
     }

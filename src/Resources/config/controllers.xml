@@ -6,10 +6,6 @@
     <services>
         <service id="simplystream.tracker_controller" public="true"
                  class="SimplyStream\SoulsDeathBundle\Controller\TrackerController">
-            <call method="setContainer">
-                <argument type="service" id="Psr\Container\ContainerInterface"/>
-            </call>
-
             <argument type="service" id="form.factory"/>
             <argument type="service" id="doctrine.orm.entity_manager"/>
             <argument type="service" id="simplystream.souls_death.services.tracker"/>
