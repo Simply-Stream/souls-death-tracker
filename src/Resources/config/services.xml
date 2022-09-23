@@ -10,6 +10,12 @@
             <argument>%simplystream.soulsdeath.model.tracker.class%</argument>
         </service>
 
+        <service class="%simplystream.soulsdeath.repository.section.class%" lazy="true"
+                 id="soulsdeath.repository.section" public="true">
+            <argument type="service" id="Doctrine\Common\Persistence\ManagerRegistry"/>
+            <argument>%simplystream.soulsdeath.model.tracker.class%</argument>
+        </service>
+
         <service class="%simplystream.soulsdeath.repository.user.class%" lazy="true"
                  id="soulsdeath.repository.user" public="true">
             <argument type="service" id="Doctrine\Common\Persistence\ManagerRegistry"/>
