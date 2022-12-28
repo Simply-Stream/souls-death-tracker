@@ -85,14 +85,14 @@ class TrackerController extends AbstractController
      * @param Request $request
      * @param string  $id
      *
-     * @return Response
+      * @return Response
      */
     public function getTracker(Request $request, string $id): Response
     {
         $tracker = $this->trackerService->get($id);
 
         if (! $tracker) {
-            throw $this->createNotFoundException("Tracker with ID '${id}' not found");
+            throw $this->createNotFoundException("Tracker with ID '{$id}' not found");
         }
 
         // @TODO: Implement a voter for this, we need some more routes with this function
@@ -166,7 +166,7 @@ class TrackerController extends AbstractController
         $tracker = $this->trackerService->get($id);
 
         if (! $tracker) {
-            throw $this->createNotFoundException("Tracker with ID '${id}' not found");
+            throw $this->createNotFoundException("Tracker with ID '{$id}' not found");
         }
 
         if (! $tracker->getPublicToken()) {

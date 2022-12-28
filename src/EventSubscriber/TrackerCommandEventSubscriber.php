@@ -90,7 +90,7 @@ class TrackerCommandEventSubscriber implements EventSubscriberInterface
                         $this->entityManager->persist($tracker);
                         $this->entityManager->flush();
 
-                        $message = "Section '${sectionName}' has been added to '!${command[0]}'";
+                        $message = "Section '{$sectionName}' has been added to '!{$command[0]}'";
                         $dispatchableEvent = new SendChatmessageEvent($channel, $message);
                         $this->eventDispatcher->dispatch($dispatchableEvent);
 
@@ -138,7 +138,7 @@ class TrackerCommandEventSubscriber implements EventSubscriberInterface
                         $this->entityManager->persist($death);
                         $this->entityManager->flush();
 
-                        $message = "Death cause '${causeName}' with alias '${causeAlias}' and ${deaths} has been added to '!${command[0]}'";
+                        $message = "Death cause '{$causeName}' with alias '{$causeAlias}' and {$deaths} has been added to '!{$command[0]}'";
                         $dispatchableEvent = new SendChatmessageEvent($channel, $message);
                         $this->eventDispatcher->dispatch($dispatchableEvent);
 
@@ -205,14 +205,14 @@ class TrackerCommandEventSubscriber implements EventSubscriberInterface
         if (count($command) === 3) {
             // 0 = command, 1 = help|?, 2 = command
             $message = match ($command[2]) {
-                'addSection' => "Usage: !${commandName} addSection <sectionName>",
-                'addCause' => "Usage: !${commandName} addCause <sectionOrder> <deathCauseName> [<deathCauseAlias> and/or <deathCauseValue>].",
-                'search' => "Usage: !${commandName} search <deathCauseName>. Fuzzy search for alias of death cause.",
-                'list' => "Usage: !${commandName} list. Whispers the list of all aliases and names of a tracker.",
+                'addSection' => "Usage: !{$commandName} addSection <sectionName>",
+                'addCause' => "Usage: !{$commandName} addCause <sectionOrder> <deathCauseName> [<deathCauseAlias> and/or <deathCauseValue>].",
+                'search' => "Usage: !{$commandName} search <deathCauseName>. Fuzzy search for alias of death cause.",
+                'list' => "Usage: !{$commandName} list. Whispers the list of all aliases and names of a tracker.",
                 default => null
             };
         } else {
-            $message = "Usage: !${commandName} <alias> [+<number>|-<number>|=<number>]. <number> = Optional value that changes death counter. Will add 1 to counter if empty. Prefix with -, + or = to subtract from, add to or set death counter to <number>.";
+            $message = "Usage: !{$commandName} <alias> [+<number>|-<number>|=<number>]. <number> = Optional value that changes death counter. Will add 1 to counter if empty. Prefix with -, + or = to subtract from, add to or set death counter to <number>.";
         }
 
         if ($message) {

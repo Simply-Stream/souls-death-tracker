@@ -8,16 +8,16 @@ use JetBrains\PhpStorm\Pure;
 
 class Section
 {
-    /** @var int|null  */
+    /** @var int|null */
     protected ?int $id;
 
     /** @var ArrayCollection|Collection */
     protected Collection|ArrayCollection $deaths;
 
-    /** @var Tracker|null  */
+    /** @var Tracker|null */
     protected ?Tracker $tracker;
 
-    /** @var string|null  */
+    /** @var string|null */
     protected ?string $title;
 
     public function __construct()
@@ -31,6 +31,18 @@ class Section
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    /**
+     * @param int|null $id
+     *
+     * @return Section
+     */
+    public function setId(?int $id): Section
+    {
+        $this->id = $id;
+
+        return $this;
     }
 
     /**

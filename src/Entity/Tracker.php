@@ -123,6 +123,18 @@ class Tracker
     }
 
     /**
+     * @param Collection|Section[] $sections
+     *
+     * @return $this
+     */
+    public function setSections(Collection $sections): self
+    {
+        $this->sections = $sections;
+
+        return $this;
+    }
+
+    /**
      * @return Collection|Section[]
      */
     public function getSections(): Collection
