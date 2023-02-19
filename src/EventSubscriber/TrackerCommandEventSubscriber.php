@@ -227,7 +227,7 @@ class TrackerCommandEventSubscriber implements EventSubscriberInterface
     public static function getSubscribedEvents(): array
     {
         return [
-            CommandExecutionEvent::class => 'onCommandExecutionEvent',
+//            CommandExecutionEvent::class => 'onCommandExecutionEvent',
         ];
     }
 }
